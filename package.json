@@ -1,0 +1,22 @@
+{
+  "name": "@ekubo/sdk",
+  "version": "0.0.1",
+  "description": "SDK for working with Ekubo protocol",
+  "main": "dist/index.js",
+  "private": true,
+  "scripts": {
+    "test": "vitest",
+    "build": "tsup src/index.ts --dts --minify",
+    "prepublish": "rm -rf dist/ && npm run build"
+  },
+  "files": [
+    "dist"
+  ],
+  "author": "Moody Salem",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "tsup": "^8.2.3",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
+  }
+}
