@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "SDK for working with Ekubo protocol",
   "main": "dist/index.js",
-  "private": true,
   "scripts": {
     "test": "vitest",
     "build": "tsup src/index.ts --dts --minify",
