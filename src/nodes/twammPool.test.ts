@@ -3,6 +3,13 @@ import { MAX_BOUND_USABLE_TICK_MAGNITUDE, TwammPool } from "./twammPool";
 
 import { describe, expect, it } from "vitest";
 
+function toSortedTicks(liquidity: bigint) {
+  return [
+    { tick: -MAX_BOUND_USABLE_TICK_MAGNITUDE, liquidityDelta: liquidity },
+    { tick: MAX_BOUND_USABLE_TICK_MAGNITUDE, liquidityDelta: -liquidity },
+  ];
+}
+
 describe("TWAMMPoolNode", () => {
   describe("quote", () => {
     it("zero sale rates, quote token0", () => {
@@ -18,6 +25,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 0n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(1000000000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -47,6 +55,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 0n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(100_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -76,6 +85,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 1n << 32n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(1_000_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -105,6 +115,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 0n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(1_000_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -134,6 +145,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 1n << 32n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(1_000_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -163,6 +175,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 0n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(1_000_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -192,6 +205,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 1n << 32n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(1_000_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -221,6 +235,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 1n << 32n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(1_000_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -250,6 +265,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 0n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(1_000_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -279,6 +295,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 0n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(1_000_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -308,6 +325,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 0n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(1_000_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -343,6 +361,7 @@ describe("TWAMMPoolNode", () => {
             time: 16,
           },
         ],
+        sortedTicks: toSortedTicks(1_000_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -378,6 +397,7 @@ describe("TWAMMPoolNode", () => {
             time: 16,
           },
         ],
+        sortedTicks: toSortedTicks(1_000_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -414,6 +434,7 @@ describe("TWAMMPoolNode", () => {
             time: 16,
           },
         ],
+        sortedTicks: toSortedTicks(1_000_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -450,6 +471,7 @@ describe("TWAMMPoolNode", () => {
             time: 16,
           },
         ],
+        sortedTicks: toSortedTicks(1_000_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -479,6 +501,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 1n << 32n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(100_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -508,6 +531,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 1n << 32n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(100_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -537,6 +561,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 1n << 32n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(1_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -566,6 +591,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 10n << 32n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(100_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -595,6 +621,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 1n << 32n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(100_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -624,6 +651,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 10n << 32n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(100_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -659,6 +687,7 @@ describe("TWAMMPoolNode", () => {
             time: 16,
           },
         ],
+        sortedTicks: toSortedTicks(100_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -694,6 +723,7 @@ describe("TWAMMPoolNode", () => {
             time: 16,
           },
         ],
+        sortedTicks: toSortedTicks(100_000n),
       });
 
       const { executionResources, calculatedAmount } = pool.quote({
@@ -723,6 +753,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 10526880627450980392156862745n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(70710696755630728101718334n),
       });
 
       const first = pool.quote({
@@ -741,7 +772,7 @@ describe("TWAMMPoolNode", () => {
             token: 0n,
           },
           meta: { block: { number: 1, time: 86400 } },
-        }),
+        })
       ).toMatchSnapshot("result of quote after full day");
 
       expect(
@@ -752,7 +783,7 @@ describe("TWAMMPoolNode", () => {
           },
           overrideState: first.stateAfter,
           meta: { block: { number: 1, time: 86400 } },
-        }),
+        })
       ).toMatchSnapshot("result of quote after full day using overrides");
     });
 
@@ -775,20 +806,21 @@ describe("TWAMMPoolNode", () => {
             saleRateDelta1: -((10n ** 18n) << 32n),
           },
         ],
+        sortedTicks: toSortedTicks(10n ** 21n),
       });
 
       expect(
         pool.quote({
           tokenAmount: { token: 0n, amount: 0n },
           meta: { block: { number: 1, time: 60 } },
-        }),
+        })
       ).toMatchSnapshot("0 seconds pass");
 
       expect(
         pool.quote({
           tokenAmount: { token: 0n, amount: 0n },
           meta: { block: { number: 1, time: 90 } },
-        }),
+        })
       ).toMatchSnapshot("30 seconds pass");
 
       const fullyExecutedTwamm = pool.quote({
@@ -804,7 +836,7 @@ describe("TWAMMPoolNode", () => {
             amount: 10n ** 18n,
           },
           meta: { block: { number: 1, time: 120 } },
-        }).calculatedAmount,
+        }).calculatedAmount
       ).toEqual(
         pool.basePool.quote({
           tokenAmount: {
@@ -813,7 +845,7 @@ describe("TWAMMPoolNode", () => {
           },
           meta: { block: { number: 1, time: 120 } },
           overrideState: fullyExecutedTwamm.stateAfter,
-        }).calculatedAmount,
+        }).calculatedAmount
       );
 
       expect(
@@ -823,7 +855,7 @@ describe("TWAMMPoolNode", () => {
             amount: 10n ** 18n,
           },
           meta: { block: { number: 1, time: 120 } },
-        }).calculatedAmount,
+        }).calculatedAmount
       ).toEqual(
         pool.basePool.quote({
           tokenAmount: {
@@ -832,7 +864,7 @@ describe("TWAMMPoolNode", () => {
           },
           meta: { block: { number: 1, time: 120 } },
           overrideState: fullyExecutedTwamm.stateAfter,
-        }).calculatedAmount,
+        }).calculatedAmount
       );
     });
 
@@ -849,6 +881,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 10526880627450980392156862745n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(70710696755630728101718334n),
       });
 
       const quote = pool.quote({
@@ -868,7 +901,7 @@ describe("TWAMMPoolNode", () => {
           },
           meta: { block: { number: 2, time: 2100 } },
           overrideState: quote.stateAfter,
-        }),
+        })
       ).toMatchSnapshot("second swap from first");
     });
 
@@ -885,6 +918,7 @@ describe("TWAMMPoolNode", () => {
         token1SaleRate: 10526880627450980392156862745n,
         lastExecutionTime: 0,
         saleRateDeltas: [],
+        sortedTicks: toSortedTicks(70710696755630728101718334n),
       });
 
       const quote = pool.quote({
@@ -904,7 +938,7 @@ describe("TWAMMPoolNode", () => {
           },
           meta: { block: { number: 2, time: 2100 } },
           overrideState: quote.stateAfter,
-        }),
+        })
       ).toMatchSnapshot("second swap from first");
     });
   });

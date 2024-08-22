@@ -64,6 +64,7 @@ export class TwammPool implements QuoteNode<TwammResources, TwammPoolState> {
     token0SaleRate,
     token1SaleRate,
     lastExecutionTime,
+    sortedTicks,
     saleRateDeltas,
   }: {
     token0: bigint;
@@ -78,6 +79,7 @@ export class TwammPool implements QuoteNode<TwammResources, TwammPoolState> {
     token0SaleRate: bigint;
     token1SaleRate: bigint;
     lastExecutionTime: number;
+    sortedTicks: Tick[];
     saleRateDeltas: TwammSaleRateDelta[];
   }) {
     this.extension = extension;
@@ -89,10 +91,7 @@ export class TwammPool implements QuoteNode<TwammResources, TwammPoolState> {
       liquidity,
       tick,
       tickSpacing: MAX_TICK_SPACING,
-      sortedTicks: [
-        { tick: -MAX_BOUND_USABLE_TICK_MAGNITUDE, liquidityDelta: liquidity },
-        { tick: MAX_BOUND_USABLE_TICK_MAGNITUDE, liquidityDelta: -liquidity },
-      ],
+      sortedTicks,
     });
 
     this.token0SaleRate = token0SaleRate;
@@ -111,7 +110,7 @@ export class TwammPool implements QuoteNode<TwammResources, TwammPoolState> {
 
   combineResources(
     resource: TwammResources,
-    additionalResources: TwammResources,
+    additionalResources: TwammResources
   ): TwammResources {
     return {
       ...this.basePool.combineResources(resource, additionalResources),
@@ -150,7 +149,7 @@ export class TwammPool implements QuoteNode<TwammResources, TwammPoolState> {
     let virtualOrderDeltaTimesCrossed: number = 0;
 
     let nextSaleRateDeltaIndex = this.saleRateDeltas.findIndex(
-      (srd) => srd.time > lastExecutionTime,
+      (srd) => srd.time > lastExecutionTime
     );
 
     // this is the current state of the base pool during the iteration
@@ -174,7 +173,7 @@ export class TwammPool implements QuoteNode<TwammResources, TwammPoolState> {
       if (amount0 > 0n && amount1 > 0n) {
         const currentSqrtRatio = max(
           MAX_BOUNDS_MIN_SQRT_RATIO,
-          min(MAX_BOUNDS_MAX_SQRT_RATIO, nextSqrtRatio),
+          min(MAX_BOUNDS_MAX_SQRT_RATIO, nextSqrtRatio)
         );
 
         nextSqrtRatio = calculateNextSqrtRatio(
@@ -184,7 +183,7 @@ export class TwammPool implements QuoteNode<TwammResources, TwammPoolState> {
           token0SaleRate,
           token1SaleRate,
           timeElapsed,
-          this.key.fee,
+          this.key.fee
         );
 
         const [token, amount] =
@@ -205,7 +204,7 @@ export class TwammPool implements QuoteNode<TwammResources, TwammPoolState> {
         basePoolStateOverride = quote.stateAfter;
         basePoolExecutionResources = this.basePool.combineResources(
           basePoolExecutionResources,
-          quote.executionResources,
+          quote.executionResources
         );
       } else if (amount0 > 0n || amount1 > 0n) {
         const [amount, isToken1, sqrtRatioLimit] =
@@ -228,7 +227,7 @@ export class TwammPool implements QuoteNode<TwammResources, TwammPoolState> {
         basePoolStateOverride = quote.stateAfter;
         basePoolExecutionResources = this.basePool.combineResources(
           basePoolExecutionResources,
-          quote.executionResources,
+          quote.executionResources
         );
 
         nextSqrtRatio = basePoolStateOverride.sqrtRatio;
@@ -267,7 +266,7 @@ export class TwammPool implements QuoteNode<TwammResources, TwammPoolState> {
       executionResources: {
         ...this.basePool.combineResources(
           basePoolExecutionResources,
-          executionResources,
+          executionResources
         ),
         virtualOrderSecondsExecuted,
         virtualOrderDeltaTimesCrossed,
