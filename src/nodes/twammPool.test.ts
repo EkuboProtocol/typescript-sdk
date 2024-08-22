@@ -3,14 +3,14 @@ import { MAX_BOUND_USABLE_TICK_MAGNITUDE, TwammPool } from "./twammPool";
 
 import { describe, expect, it } from "vitest";
 
-function toSortedTicks(liquidity: bigint) {
+export function toSortedTicks(liquidity: bigint) {
   return [
     { tick: -MAX_BOUND_USABLE_TICK_MAGNITUDE, liquidityDelta: liquidity },
     { tick: MAX_BOUND_USABLE_TICK_MAGNITUDE, liquidityDelta: -liquidity },
   ];
 }
 
-describe("TWAMMPoolNode", () => {
+describe("twammPool", () => {
   describe("quote", () => {
     it("zero sale rates, quote token0", () => {
       const pool = new TwammPool({

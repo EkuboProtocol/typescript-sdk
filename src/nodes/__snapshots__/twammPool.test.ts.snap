@@ -1,10 +1,10 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`TWAMMPoolNode > quote > 1e18 sale rates, no sale rate deltas, quote token0 1`] = `989n`;
+exports[`twammPool > quote > 1e18 sale rates, no sale rate deltas, quote token0 1`] = `989n`;
 
-exports[`TWAMMPoolNode > quote > 1e18 sale rates, no sale rate deltas, quote token1 1`] = `990n`;
+exports[`twammPool > quote > 1e18 sale rates, no sale rate deltas, quote token1 1`] = `990n`;
 
-exports[`TWAMMPoolNode > quote > compare to contract output > first swap 1`] = `
+exports[`twammPool > quote > compare to contract output > first swap 1`] = `
 {
   "calculatedAmount": 19993991114278719145825n,
   "consumedAmount": 10000000000000000000000n,
@@ -27,7 +27,7 @@ exports[`TWAMMPoolNode > quote > compare to contract output > first swap 1`] = `
 }
 `;
 
-exports[`TWAMMPoolNode > quote > compare to contract output > second swap from first 1`] = `
+exports[`twammPool > quote > compare to contract output > second swap from first 1`] = `
 {
   "calculatedAmount": 19985938387207888688304n,
   "consumedAmount": 10000000000000000000000n,
@@ -50,7 +50,7 @@ exports[`TWAMMPoolNode > quote > compare to contract output > second swap from f
 }
 `;
 
-exports[`TWAMMPoolNode > quote > moody testing examples > 0 seconds pass 1`] = `
+exports[`twammPool > quote > moody testing examples > 0 seconds pass 1`] = `
 {
   "calculatedAmount": 0n,
   "consumedAmount": 0n,
@@ -73,7 +73,7 @@ exports[`TWAMMPoolNode > quote > moody testing examples > 0 seconds pass 1`] = `
 }
 `;
 
-exports[`TWAMMPoolNode > quote > moody testing examples > 30 seconds pass 1`] = `
+exports[`twammPool > quote > moody testing examples > 30 seconds pass 1`] = `
 {
   "calculatedAmount": 0n,
   "consumedAmount": 0n,
@@ -96,7 +96,7 @@ exports[`TWAMMPoolNode > quote > moody testing examples > 30 seconds pass 1`] = 
 }
 `;
 
-exports[`TWAMMPoolNode > quote > moody testing examples > 60 seconds pass 1`] = `
+exports[`twammPool > quote > moody testing examples > 60 seconds pass 1`] = `
 {
   "calculatedAmount": 0n,
   "consumedAmount": 0n,
@@ -119,7 +119,7 @@ exports[`TWAMMPoolNode > quote > moody testing examples > 60 seconds pass 1`] = 
 }
 `;
 
-exports[`TWAMMPoolNode > quote > price after no swap > result of quote after full day 1`] = `
+exports[`twammPool > quote > price after no swap > result of quote after full day 1`] = `
 {
   "calculatedAmount": 0n,
   "consumedAmount": 0n,
@@ -142,7 +142,7 @@ exports[`TWAMMPoolNode > quote > price after no swap > result of quote after ful
 }
 `;
 
-exports[`TWAMMPoolNode > quote > price after no swap > result of quote after full day using overrides 1`] = `
+exports[`twammPool > quote > price after no swap > result of quote after full day using overrides 1`] = `
 {
   "calculatedAmount": 0n,
   "consumedAmount": 0n,
@@ -165,7 +165,7 @@ exports[`TWAMMPoolNode > quote > price after no swap > result of quote after ful
 }
 `;
 
-exports[`TWAMMPoolNode > quote > price after no swap > result of quote after half day 1`] = `
+exports[`twammPool > quote > price after no swap > result of quote after half day 1`] = `
 {
   "calculatedAmount": 0n,
   "consumedAmount": 0n,
@@ -188,11 +188,11 @@ exports[`TWAMMPoolNode > quote > price after no swap > result of quote after hal
 }
 `;
 
-exports[`TWAMMPoolNode > quote > sale rate deltas doubles halfway through execution, quote token0 1`] = `989n`;
+exports[`twammPool > quote > sale rate deltas doubles halfway through execution, quote token0 1`] = `989n`;
 
-exports[`TWAMMPoolNode > quote > sale rate deltas goes to zero halfway through execution, quote token0 1`] = `989n`;
+exports[`twammPool > quote > sale rate deltas goes to zero halfway through execution, quote token0 1`] = `989n`;
 
-exports[`TWAMMPoolNode > quote > second swap in opposite direction > first swap 1`] = `
+exports[`twammPool > quote > second swap in opposite direction > first swap 1`] = `
 {
   "calculatedAmount": 19993991114278719145825n,
   "consumedAmount": 10000000000000000000000n,
@@ -215,7 +215,7 @@ exports[`TWAMMPoolNode > quote > second swap in opposite direction > first swap 
 }
 `;
 
-exports[`TWAMMPoolNode > quote > second swap in opposite direction > second swap from first 1`] = `
+exports[`twammPool > quote > second swap in opposite direction > second swap from first 1`] = `
 {
   "calculatedAmount": 5002017297567650143567n,
   "consumedAmount": 10000000000000000000000n,
@@ -238,40 +238,40 @@ exports[`TWAMMPoolNode > quote > second swap in opposite direction > second swap
 }
 `;
 
-exports[`TWAMMPoolNode > quote > token0SaleRate > token1SaleRate, no sale rate deltas, quote token0 1`] = `983n`;
+exports[`twammPool > quote > token0SaleRate > token1SaleRate, no sale rate deltas, quote token0 1`] = `983n`;
 
-exports[`TWAMMPoolNode > quote > token0SaleRate > token1SaleRate, no sale rate deltas, quote token1 1`] = `717n`;
+exports[`twammPool > quote > token0SaleRate > token1SaleRate, no sale rate deltas, quote token1 1`] = `717n`;
 
-exports[`TWAMMPoolNode > quote > token1SaleRate > token0SaleRate, no sale rate deltas, quote token0 1`] = `994n`;
+exports[`twammPool > quote > token1SaleRate > token0SaleRate, no sale rate deltas, quote token0 1`] = `994n`;
 
-exports[`TWAMMPoolNode > quote > token1SaleRate > token0SaleRate, no sale rate deltas, quote token1 1`] = `984n`;
+exports[`twammPool > quote > token1SaleRate > token0SaleRate, no sale rate deltas, quote token1 1`] = `984n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rate token0, close to max usable price, deltas move to usable price, quote token0 1`] = `390n`;
+exports[`twammPool > quote > zero sale rate token0, close to max usable price, deltas move to usable price, quote token0 1`] = `390n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rate token0, close to max usable price, deltas move to usable price, quote token1 1`] = `2555n`;
+exports[`twammPool > quote > zero sale rate token0, close to max usable price, deltas move to usable price, quote token1 1`] = `2555n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rate token0, close to max usable price, quote token0 1`] = `15448319606494511814769784n`;
+exports[`twammPool > quote > zero sale rate token0, close to max usable price, quote token0 1`] = `15448319606494511814769784n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rate token0, close to max usable price, quote token1 1`] = `0n`;
+exports[`twammPool > quote > zero sale rate token0, close to max usable price, quote token1 1`] = `0n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rate token0, max price, quote token1 1`] = `0n`;
+exports[`twammPool > quote > zero sale rate token0, max price, quote token1 1`] = `0n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rate token0, quote token1 1`] = `998n`;
+exports[`twammPool > quote > zero sale rate token0, quote token1 1`] = `998n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rate token1, close to min usable price, deltas move to usable price, quote token0 1`] = `2555n`;
+exports[`twammPool > quote > zero sale rate token1, close to min usable price, deltas move to usable price, quote token0 1`] = `2555n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rate token1, close to min usable price, deltas move to usable price, quote token1 1`] = `390n`;
+exports[`twammPool > quote > zero sale rate token1, close to min usable price, deltas move to usable price, quote token1 1`] = `390n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rate token1, close to min usable price, quote token0 1`] = `0n`;
+exports[`twammPool > quote > zero sale rate token1, close to min usable price, quote token0 1`] = `0n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rate token1, close to min usable price, quote token0 2`] = `0n`;
+exports[`twammPool > quote > zero sale rate token1, close to min usable price, quote token0 2`] = `0n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rate token1, close to min usable price, quote token1 1`] = `15448319606494511814769784n`;
+exports[`twammPool > quote > zero sale rate token1, close to min usable price, quote token1 1`] = `15448319606494511814769784n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rate token1, min price, quote token1 1`] = `18446739710271795309434404n`;
+exports[`twammPool > quote > zero sale rate token1, min price, quote token1 1`] = `18446739710271795309434404n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rate token1, quote token1 1`] = `999n`;
+exports[`twammPool > quote > zero sale rate token1, quote token1 1`] = `999n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rates, quote token0 1`] = `999n`;
+exports[`twammPool > quote > zero sale rates, quote token0 1`] = `999n`;
 
-exports[`TWAMMPoolNode > quote > zero sale rates, quote token1 1`] = `990n`;
+exports[`twammPool > quote > zero sale rates, quote token1 1`] = `990n`;

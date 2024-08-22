@@ -20,8 +20,8 @@ export interface OraclePoolState extends BasePoolState {
 
 export class OraclePool implements QuoteNode<OracleResources, OraclePoolState> {
   private readonly extension: bigint;
-  private readonly basePool: BasePool;
   private readonly lastSnapshotTime: bigint;
+  readonly basePool: BasePool;
 
   constructor({
     token0,
@@ -73,9 +73,10 @@ export class OraclePool implements QuoteNode<OracleResources, OraclePoolState> {
   ): Quote<OracleResources, OraclePoolState> {
     const quote = this.basePool.quote(params);
 
-    const state = params.overrideState ?? this.state;
+    const lastSnapshotTime =
+      params.overrideState?.lastSnapshotTime ?? this.lastSnapshotTime;
     const blockTimestamp = BigInt(params.meta.block.time);
-    const snapshotUpdated = state.lastSnapshotTime < blockTimestamp;
+    const snapshotUpdated = lastSnapshotTime < blockTimestamp;
 
     return {
       ...quote,
@@ -84,10 +85,8 @@ export class OraclePool implements QuoteNode<OracleResources, OraclePoolState> {
         snapshotUpdated,
       },
       stateAfter: {
-        ...state,
-        lastSnapshotTime: snapshotUpdated
-          ? blockTimestamp
-          : state.lastSnapshotTime,
+        ...quote.stateAfter,
+        lastSnapshotTime: snapshotUpdated ? blockTimestamp : lastSnapshotTime,
       },
     };
   }
