@@ -17,6 +17,11 @@ import {
   TwammResources,
   TwammSaleRateDelta,
 } from "./nodes/twammPool";
+import {
+  OraclePoolState,
+  OraclePool,
+  OracleResources,
+} from "./nodes/oraclePool";
 
 export {
   BasePoolState,
@@ -34,4 +39,7 @@ export {
   QuoteNode,
   BasePool,
   TwammPool,
+  OraclePoolState,
+  OraclePool,
+  OracleResources,
 };
