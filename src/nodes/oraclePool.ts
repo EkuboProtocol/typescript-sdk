@@ -11,7 +11,7 @@ import {
 } from "./quoteNode";
 
 export interface OracleResources extends BasePoolResources {
-  snapshotUpdated: boolean;
+  readonly snapshotUpdated: boolean;
 }
 
 export interface OraclePoolState extends BasePoolState {

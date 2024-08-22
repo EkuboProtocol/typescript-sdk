@@ -1,24 +1,24 @@
 export interface BasePoolState {
-  sqrtRatio: bigint;
-  liquidity: bigint;
-  activeTickIndex: number;
+  readonly sqrtRatio: bigint;
+  readonly liquidity: bigint;
+  readonly activeTickIndex: number;
 }
 
 export interface BasePoolResources {
-  initializedTicksCrossed: number;
-  tickSpacingsCrossed: number;
+  readonly initializedTicksCrossed: number;
+  readonly tickSpacingsCrossed: number;
 }
 
 export interface Quote<
   TResources extends BasePoolResources,
-  TState extends BasePoolState,
+  TState extends BasePoolState
 > {
-  consumedAmount: bigint;
-  calculatedAmount: bigint;
-  isPriceIncreasing: boolean;
-  stateAfter: TState;
-  executionResources: TResources;
-  feesPaid: bigint;
+  readonly consumedAmount: bigint;
+  readonly calculatedAmount: bigint;
+  readonly isPriceIncreasing: boolean;
+  readonly stateAfter: TState;
+  readonly executionResources: TResources;
+  readonly feesPaid: bigint;
 }
 
 export interface NodeKey {
@@ -30,8 +30,8 @@ export interface NodeKey {
 }
 
 export interface TokenAmount {
-  token: bigint;
-  amount: bigint;
+  readonly token: bigint;
+  readonly amount: bigint;
 }
 
 export interface Block {
@@ -44,10 +44,14 @@ export interface QuoteMeta {
 }
 
 export interface QuoteParams<TState extends BasePoolState> {
-  tokenAmount: TokenAmount;
-  meta: QuoteMeta;
-  sqrtRatioLimit?: bigint;
-  overrideState?: TState;
+  // The amount of token to swap. The token must be one of (token0, token1)
+  readonly tokenAmount: TokenAmount;
+  // The metadata for the block at which the swap is occurring
+  readonly meta: QuoteMeta;
+  // The limit to swap to
+  readonly sqrtRatioLimit?: bigint;
+  // Optionally replace the current state of the pool before executing the swap
+  readonly overrideState?: TState;
 }
 
 export interface Tick {
@@ -57,12 +61,16 @@ export interface Tick {
 
 export interface QuoteNode<
   TResources extends BasePoolResources = BasePoolResources,
-  TSwapState extends BasePoolState = BasePoolState,
+  TSwapState extends BasePoolState = BasePoolState
 > {
   readonly key: NodeKey;
   readonly state: Readonly<TSwapState>;
   readonly sortedTicks: Tick[];
 
+  /**
+   * Returns the result of swapping against the pool with the given parameters
+   * @param params the parameters of the swap
+   */
   quote(params: QuoteParams<TSwapState>): Quote<TResources, TSwapState>;
 
   /**
@@ -72,7 +80,7 @@ export interface QuoteNode<
    */
   combineResources(
     resource: TResources,
-    additionalResources: TResources,
+    additionalResources: TResources
   ): TResources;
 
   /**
