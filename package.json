@@ -1,6 +1,6 @@
 {
   "name": "@ekubo/sdk",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "SDK for working with Ekubo protocol",
   "main": "dist/index.js",
   "scripts": {
