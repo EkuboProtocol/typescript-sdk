@@ -1,6 +1,9 @@
 import { MAX_SQRT_RATIO, MIN_SQRT_RATIO, toSqrtRatio } from "../math";
 import { isPriceIncreasing } from "../math/swap";
-import { approximateNumberOfTickSpacingsCrossed, newApproximateNumberOfTickSpacingsCrossed } from "../math/tick";
+import {
+  approximateNumberOfTickSpacingsCrossed,
+  newApproximateNumberOfTickSpacingsCrossed,
+} from "../math/tick";
 import { BasePool, findNearestInitializedTickIndex } from "./basePool";
 import {
   BasePoolResources,
@@ -112,7 +115,8 @@ export class LimitOrderPool implements QuoteLimitOrderNode {
     let calculated_amount = 0n;
     let consumed_amount = 0n;
     let fees_paid = 0n;
-    let base_pool_resources: BasePoolResources = this.basePool.initialResources();
+    let base_pool_resources: BasePoolResources =
+      this.basePool.initialResources();
     let base_pool_state = initial_state.basePoolState;
 
     const active_tick_index = initial_state.basePoolState.activeTickIndex;
@@ -138,7 +142,7 @@ export class LimitOrderPool implements QuoteLimitOrderNode {
           } else {
             next_unpulled_order_tick_index_after_skip = 0;
           }
-        } 
+        }
       } else {
         if (active_tick_index != lower) {
           if (lower !== null) {
@@ -262,6 +266,7 @@ export class LimitOrderPool implements QuoteLimitOrderNode {
         base_pool_resources = this.basePool.combineResources(
           base_pool_resources,
           {
+            noOverridePriceChange: 0,
             tickSpacingsCrossed: newApproximateNumberOfTickSpacingsCrossed(
               base_pool_state.sqrtRatio,
               skip_starting_sqrt_ratio,
@@ -314,9 +319,17 @@ export class LimitOrderPool implements QuoteLimitOrderNode {
             current_active_tick_index = next_tick_index;
 
             if (liquidity_delta < 0n !== is_increasing) {
-              current_liquidity = current_liquidity + (liquidity_delta < 0n ? liquidity_delta * -1n : liquidity_delta);
+              current_liquidity =
+                current_liquidity +
+                (liquidity_delta < 0n
+                  ? liquidity_delta * -1n
+                  : liquidity_delta);
             } else {
-              current_liquidity = current_liquidity - (liquidity_delta < 0n ? liquidity_delta * -1n : liquidity_delta);
+              current_liquidity =
+                current_liquidity -
+                (liquidity_delta < 0n
+                  ? liquidity_delta * -1n
+                  : liquidity_delta);
             }
           }
 

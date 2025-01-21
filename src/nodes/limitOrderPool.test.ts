@@ -44,6 +44,9 @@ describe("LimitOrderPool", () => {
       result.executionResources.basePoolResources.initializedTicksCrossed
     ).toEqual(1);
     expect(
+      result.executionResources.basePoolResources.noOverridePriceChange,
+    ).toEqual(1);
+    expect(
       result.executionResources.basePoolResources.tickSpacingsCrossed
     ).toEqual(693147);
   });
@@ -94,6 +97,9 @@ describe("LimitOrderPool", () => {
     expect(
       result.executionResources.basePoolResources.initializedTicksCrossed
     ).toEqual(2);
+    expect(
+      result.executionResources.basePoolResources.noOverridePriceChange,
+    ).toEqual(1);
     expect(
       result.executionResources.basePoolResources.tickSpacingsCrossed
     ).toEqual(2);
