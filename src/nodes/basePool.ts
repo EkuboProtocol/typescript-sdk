@@ -1,6 +1,7 @@
 import { computeStep, isPriceIncreasing } from "../math/swap";
 import {
   approximateNumberOfTickSpacingsCrossed,
+  newApproximateNumberOfTickSpacingsCrossed,
   MAX_SQRT_RATIO,
   MIN_SQRT_RATIO,
   toSqrtRatio,
@@ -93,6 +94,7 @@ export class BasePool implements QuoteNode {
     additionalResources: BasePoolResources,
   ): BasePoolResources {
     return {
+      noOverridePriceChange: resource.noOverridePriceChange + additionalResources.noOverridePriceChange,
       initializedTicksCrossed:
         resource.initializedTicksCrossed +
         additionalResources.initializedTicksCrossed,
@@ -103,6 +105,7 @@ export class BasePool implements QuoteNode {
 
   initialResources(): BasePoolResources {
     return {
+      noOverridePriceChange: 0,
       initializedTicksCrossed: 0,
       tickSpacingsCrossed: 0,
     };
@@ -165,6 +168,7 @@ export class BasePool implements QuoteNode {
     const startingSqrtRatio = sqrtRatio;
 
     while (amountRemaining !== 0n && sqrtRatio !== sqrtRatioLimit) {
+       /** 
       const nextInitializedTick: Tick | null =
         (isIncreasing
           ? this.sortedTicks[activeTickIndex + 1]
@@ -173,7 +177,56 @@ export class BasePool implements QuoteNode {
       const nextInitializedTickSqrtRatio = nextInitializedTick
         ? toSqrtRatio(nextInitializedTick.tick)
         : null;
-
+      */
+        let nextInitializedTick: {
+          index: number;
+          tick: Tick;
+          sqrtRatio: bigint;
+        } | null = null;
+    
+        if (isIncreasing) {
+          if (activeTickIndex !== null) {
+            const nextIndex = activeTickIndex + 1;
+            const nextTick = this.sortedTicks[nextIndex];
+            if (nextTick) {
+              nextInitializedTick = {
+                index: nextIndex,
+                tick: nextTick,
+                sqrtRatio: toSqrtRatio(nextTick.tick),
+              };
+            } else {
+              nextInitializedTick = null;
+            }
+          } else {
+            const firstTick = this.sortedTicks[0];
+            if (firstTick) {
+              nextInitializedTick = {
+                index: 0,
+                tick: firstTick,
+                sqrtRatio: toSqrtRatio(firstTick.tick),
+              };
+            } else {
+              nextInitializedTick = null;
+            }
+          }
+        } else {
+          if (activeTickIndex !== null) {
+            const currentTick = this.sortedTicks[activeTickIndex];
+            if (currentTick) {
+              nextInitializedTick = {
+                index: activeTickIndex,
+                tick: currentTick,
+                sqrtRatio: toSqrtRatio(currentTick.tick),
+              };
+            } else {
+              nextInitializedTick = null;
+            }
+          } else {
+            nextInitializedTick = null;
+          }
+        }
+        const nextInitializedTickSqrtRatio = nextInitializedTick?.sqrtRatio;
+        
       const stepSqrtRatioLimit =
         nextInitializedTickSqrtRatio === null
           ? sqrtRatioLimit
@@ -198,14 +251,21 @@ export class BasePool implements QuoteNode {
       // cross the tick if the price moved all the way to the next initialized tick price
       if (nextInitializedTick && sqrtRatio === nextInitializedTickSqrtRatio) {
         activeTickIndex = isIncreasing
-          ? activeTickIndex + 1
-          : activeTickIndex - 1;
+        ? nextInitializedTick.index
+        : nextInitializedTick.index != 0
+          ? nextInitializedTick.index - 1
+          : null;
         initializedTicksCrossed++;
         liquidity += isIncreasing
-          ? nextInitializedTick.liquidityDelta
-          : -nextInitializedTick.liquidityDelta;
+        ? nextInitializedTick.tick.liquidityDelta
+        : -nextInitializedTick.tick.liquidityDelta;
       }
     }
+    const noOverridePriceChange =
+    startingSqrtRatio == (this.state.sqrtRatio) &&
+    startingSqrtRatio != sqrtRatio
+      ? 1
+      : 0;
 
     return {
       isPriceIncreasing: isIncreasing,
@@ -213,10 +273,11 @@ export class BasePool implements QuoteNode {
       calculatedAmount,
       feesPaid,
       executionResources: {
+        noOverridePriceChange,
         initializedTicksCrossed,
         tickSpacingsCrossed:
           resources.tickSpacingsCrossed +
-          approximateNumberOfTickSpacingsCrossed(
+          newApproximateNumberOfTickSpacingsCrossed(
             startingSqrtRatio,
             sqrtRatio,
             this.key.tickSpacing,

@@ -5,6 +5,7 @@ export interface BasePoolState {
 }
 
 export interface BasePoolResources {
+  readonly noOverridePriceChange: number;
   readonly initializedTicksCrossed: number;
   readonly tickSpacingsCrossed: number;
 }
@@ -43,7 +44,7 @@ export interface QuoteMeta {
   readonly block: Block;
 }
 
-export interface QuoteParams<TState extends BasePoolState> {
+export interface QuoteParams<TState extends BasePoolState | LimitOrderPoolState> {
   // The amount of token to swap. The token must be one of (token0, token1)
   readonly tokenAmount: TokenAmount;
   // The metadata for the block at which the swap is occurring
@@ -92,4 +93,45 @@ export interface QuoteNode<
    * Returns whether the pool has any useful liquidity at all. Should be a fast check for eliminating empty pools.
    */
   hasLiquidity(): boolean;
+}
+
+// LİMIT ORDER 
+export interface LimitOrderPoolState {
+  basePoolState: BasePoolState;
+  tickIndicesReached?: [number, number] | null;
+}
+export interface LimitOrderPoolResources {
+  basePoolResources: BasePoolResources;
+  ordersPulled: number;
+}
+
+export interface QuoteLimitOrderPool<
+  TResources extends LimitOrderPoolResources,
+  TState extends LimitOrderPoolState
+> {
+  readonly consumedAmount: bigint;
+  readonly calculatedAmount: bigint;
+  readonly isPriceIncreasing: boolean;
+  readonly stateAfter: TState;
+  readonly executionResources: TResources;
+  readonly feesPaid: bigint;
+}
+
+
+export interface QuoteLimitOrderNode<
+  TResources extends LimitOrderPoolResources = LimitOrderPoolResources,
+  TSwapState extends LimitOrderPoolState = LimitOrderPoolState
+> {
+  readonly basePool: QuoteNode;
+  readonly key: NodeKey;
+  readonly state: Readonly<TSwapState>;
+  readonly sortedTicks: Tick[];
+
+  /**
+   * Returns the result of swapping against the pool with the given parameters
+   * @param params the parameters of the swap
+   */
+  quote(params: QuoteParams<TSwapState>): QuoteLimitOrderPool<TResources, TSwapState>;
+
+
 }
