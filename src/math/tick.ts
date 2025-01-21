@@ -114,3 +114,41 @@ export function approximateNumberOfTickSpacingsCrossed(
 
   return Math.floor(Math.abs(logPriceDiff / (tickSpacing * 251)));
 }
+
+
+
+export function u256ToFloatBaseX128(x128: bigint): number {
+  // Constants for conversion
+  const TWO_POW_128 = 2n ** 128n;
+  const TWO_POW_64 = 2n ** 64n;
+
+  // Convert BigNumber to bigint for bit manipulation
+  const value = BigInt(x128.toString());
+
+  // Extract the 256 bits into 64-bit chunks
+  const chunk0 = value & ((1n << 64n) - 1n);
+  const chunk1 = (value >> 64n) & ((1n << 64n) - 1n);
+  const chunk2 = (value >> 128n) & ((1n << 64n) - 1n);
+  const chunk3 = (value >> 192n) & ((1n << 64n) - 1n);
+
+  // Convert to float with proper scaling
+  return (
+    Number(chunk0) / Number(TWO_POW_128) +
+    Number(chunk1) / Number(TWO_POW_64) +
+    Number(chunk2) +
+    Number(chunk3) * Number(TWO_POW_64)
+  );
+}
+
+export function newApproximateNumberOfTickSpacingsCrossed(
+  startingSqrtRatio: bigint,
+  endingSqrtRatio: bigint,
+  tickSpacing: number,
+): number {
+  const start = u256ToFloatBaseX128(startingSqrtRatio);
+  const end = u256ToFloatBaseX128(endingSqrtRatio);
+  const ticksCrossed = Math.floor(
+    Math.abs(Math.log(start) - Math.log(end)) / logBase,
+  );
+  return Math.floor(ticksCrossed / tickSpacing);
+}
