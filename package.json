@@ -1,6 +1,6 @@
 {
   "name": "@ekubo/sdk",
-  "version": "0.0.1",
+  "version": "0.0.8-alpha.0",
   "private": false,
   "description": "Shared math utilities for Ekubo (chain-agnostic)",
   "type": "module",
