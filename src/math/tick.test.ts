@@ -2,11 +2,14 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import {
-  MAX_SQRT_RATIO,
-  MAX_TICK,
-  MAX_TICK_SPACING,
-  MIN_SQRT_RATIO,
-  MIN_TICK,
+  EVM_MAX_SQRT_RATIO,
+  EVM_MAX_TICK,
+  EVM_MIN_SQRT_RATIO,
+  EVM_MIN_TICK,
+  STARKNET_MAX_SQRT_RATIO,
+  STARKNET_MAX_TICK,
+  STARKNET_MIN_SQRT_RATIO,
+  STARKNET_MIN_TICK,
   approximateNumberOfTickSpacingsCrossed,
   fixedSqrtRatioToFloat,
   floatSqrtRatioToFixed,
@@ -14,36 +17,55 @@ import {
 } from "./tick";
 
 describe("toSqrtRatio", () => {
-  it("min tick", () => {
-    assert.strictEqual(toSqrtRatio(MIN_TICK), MIN_SQRT_RATIO);
+  it("evm: min tick", () => {
+    assert.strictEqual(toSqrtRatio(EVM_MIN_TICK, "evm"), EVM_MIN_SQRT_RATIO);
   });
-  it("max tick", () => {
-    assert.strictEqual(toSqrtRatio(MAX_TICK), MAX_SQRT_RATIO);
+  it("evm: max tick", () => {
+    assert.strictEqual(toSqrtRatio(EVM_MAX_TICK, "evm"), EVM_MAX_SQRT_RATIO);
   });
-  it("zero", () => {
-    assert.strictEqual(toSqrtRatio(0), 1n << 128n);
-  });
-
-  it("sample positive ticks", () => {
-    assert.strictEqual(
-      toSqrtRatio(1_000_000),
-      561030636129153856579134353873645338624n,
-    );
-    assert.strictEqual(
-      toSqrtRatio(10_000_000),
-      50502254805927926084423855178401471004672n,
-    );
+  it("evm: zero", () => {
+    assert.strictEqual(toSqrtRatio(0, "evm"), 1n << 128n);
   });
 
-  it("sample negative ticks", () => {
+  it("starknet: min tick", () => {
     assert.strictEqual(
-      toSqrtRatio(-1_000_000),
-      206391740095027370700312310528859963392n,
+      toSqrtRatio(STARKNET_MIN_TICK, "starknet"),
+      STARKNET_MIN_SQRT_RATIO,
     );
+  });
+  it("starknet: max tick", () => {
     assert.strictEqual(
-      toSqrtRatio(-10_000_000),
-      2292810285051363400276741630355046400n,
+      toSqrtRatio(STARKNET_MAX_TICK, "starknet"),
+      STARKNET_MAX_SQRT_RATIO,
     );
+  });
+  it("starknet: zero", () => {
+    assert.strictEqual(toSqrtRatio(0, "starknet"), 1n << 128n);
+  });
+
+  it("sample positive ticks (both chains)", () => {
+    const cases = [
+      ["evm", 1_000_000, 561030636129153856579134353873645338624n],
+      ["evm", 10_000_000, 50502254805927926084423855178401471004672n],
+      ["starknet", 1_000_000, 561030636129153856592777659729523183729n],
+      ["starknet", 10_000_000, 50502254805927926084427918474025309948677n],
+    ] as const;
+
+    for (const [chain, tick, expected] of cases) {
+      assert.strictEqual(toSqrtRatio(tick, chain), expected);
+    }
+  });
+
+  it("sample negative ticks (both chains)", () => {
+    const cases = [
+      ["evm", -1_000_000, 206391740095027370700312310528859963392n],
+      ["evm", -10_000_000, 2292810285051363400276741630355046400n],
+      ["starknet", -1_000_000, 206391740095027370700312310531588921767n],
+      ["starknet", -10_000_000, 2292810285051363400276741638672651165n],
+    ] as const;
+    for (const [chain, tick, expected] of cases) {
+      assert.strictEqual(toSqrtRatio(tick, chain), expected);
+    }
   });
 });
 
@@ -66,23 +88,61 @@ describe("approximateNumberOfTickSpacingsCrossed", () => {
       5,
     );
   });
-  it("max to min", () => {
-    assert.strictEqual(
-      approximateNumberOfTickSpacingsCrossed(MAX_SQRT_RATIO, MIN_SQRT_RATIO, 1),
-      706954,
-    );
-  });
-  it("min to max", () => {
-    assert.strictEqual(
-      approximateNumberOfTickSpacingsCrossed(MIN_SQRT_RATIO, MAX_SQRT_RATIO, 1),
-      706954,
-    );
-  });
-  it("min to max 1k tick spacing", () => {
+  it("evm: max to min", () => {
     assert.strictEqual(
       approximateNumberOfTickSpacingsCrossed(
-        MIN_SQRT_RATIO,
-        MAX_SQRT_RATIO,
+        EVM_MAX_SQRT_RATIO,
+        EVM_MIN_SQRT_RATIO,
+        1,
+      ),
+      706954,
+    );
+  });
+  it("starknet: max to min", () => {
+    assert.strictEqual(
+      approximateNumberOfTickSpacingsCrossed(
+        STARKNET_MAX_SQRT_RATIO,
+        STARKNET_MIN_SQRT_RATIO,
+        1,
+      ),
+      706955,
+    );
+  });
+  it("evm: min to max", () => {
+    assert.strictEqual(
+      approximateNumberOfTickSpacingsCrossed(
+        EVM_MIN_SQRT_RATIO,
+        EVM_MAX_SQRT_RATIO,
+        1,
+      ),
+      706954,
+    );
+  });
+  it("starknet: min to max", () => {
+    assert.strictEqual(
+      approximateNumberOfTickSpacingsCrossed(
+        STARKNET_MIN_SQRT_RATIO,
+        STARKNET_MAX_SQRT_RATIO,
+        1,
+      ),
+      706955,
+    );
+  });
+  it("evm: min to max 1k tick spacing", () => {
+    assert.strictEqual(
+      approximateNumberOfTickSpacingsCrossed(
+        EVM_MIN_SQRT_RATIO,
+        EVM_MAX_SQRT_RATIO,
+        1000,
+      ),
+      706,
+    );
+  });
+  it("starknet: min to max 1k tick spacing", () => {
+    assert.strictEqual(
+      approximateNumberOfTickSpacingsCrossed(
+        STARKNET_MIN_SQRT_RATIO,
+        STARKNET_MAX_SQRT_RATIO,
         1000,
       ),
       706,
@@ -101,7 +161,7 @@ describe("sqrt ratio float <-> fixed conversions", () => {
   });
 
   it("encodes then decodes without loss for min/max ratios", () => {
-    const cases = [MIN_SQRT_RATIO, MAX_SQRT_RATIO, 1n << 128n];
+    const cases = [EVM_MIN_SQRT_RATIO, EVM_MAX_SQRT_RATIO, 1n << 128n];
     for (const sqrtRatio of cases) {
       const floatEncoded = fixedSqrtRatioToFloat(sqrtRatio);
       const decoded = floatSqrtRatioToFixed(floatEncoded);
