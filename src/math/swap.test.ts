@@ -6,7 +6,17 @@ import {
   computeStep,
   isPriceIncreasing,
 } from "./swap";
-import { MAX_SQRT_RATIO, MIN_SQRT_RATIO } from "./tick";
+import {
+  EVM_MAX_SQRT_RATIO,
+  EVM_MIN_SQRT_RATIO,
+  STARKNET_MAX_SQRT_RATIO,
+  STARKNET_MIN_SQRT_RATIO,
+} from "./tick";
+
+const CHAIN_CASES = [
+  { chain: "evm", min: EVM_MIN_SQRT_RATIO, max: EVM_MAX_SQRT_RATIO },
+  { chain: "starknet", min: STARKNET_MIN_SQRT_RATIO, max: STARKNET_MAX_SQRT_RATIO },
+] as const;
 
 describe("isPriceIncreasing", () => {
   it("many cases", () => {
@@ -90,81 +100,83 @@ describe("computeStep", () => {
     );
   });
 
-  it("max limit token0 input", () => {
-    assert.deepStrictEqual(
-      computeStep({
-        sqrtRatio: 0x100000000000000000000000000000000n,
-        liquidity: 100000n,
-        sqrtRatioLimit: MIN_SQRT_RATIO,
-        amount: 10000n,
-        isToken1: false,
-        fee: 1n << 127n,
-      }),
-      {
-        calculatedAmount: 4761n,
-        consumedAmount: 10000n,
-        feeAmount: 5000n,
-        sqrtRatioNext: 324078444686608060441309149935017344244n,
-      },
-    );
-  });
+  for (const { chain, min, max } of CHAIN_CASES) {
+    it(`${chain}: max limit token0 input`, () => {
+      assert.deepStrictEqual(
+        computeStep({
+          sqrtRatio: 0x100000000000000000000000000000000n,
+          liquidity: 100000n,
+          sqrtRatioLimit: min,
+          amount: 10000n,
+          isToken1: false,
+          fee: 1n << 127n,
+        }),
+        {
+          calculatedAmount: 4761n,
+          consumedAmount: 10000n,
+          feeAmount: 5000n,
+          sqrtRatioNext: 324078444686608060441309149935017344244n,
+        },
+      );
+    });
 
-  it("max limit token1 input", () => {
-    assert.deepStrictEqual(
-      computeStep({
-        sqrtRatio: 0x100000000000000000000000000000000n,
-        liquidity: 100000n,
-        sqrtRatioLimit: MAX_SQRT_RATIO,
-        amount: 10000n,
-        isToken1: true,
-        fee: 1n << 127n,
-      }),
-      {
-        calculatedAmount: 4761n,
-        consumedAmount: 10000n,
-        feeAmount: 5000n,
-        sqrtRatioNext: 357296485266985386636543337803356622028n,
-      },
-    );
-  });
+    it(`${chain}: max limit token1 input`, () => {
+      assert.deepStrictEqual(
+        computeStep({
+          sqrtRatio: 0x100000000000000000000000000000000n,
+          liquidity: 100000n,
+          sqrtRatioLimit: max,
+          amount: 10000n,
+          isToken1: true,
+          fee: 1n << 127n,
+        }),
+        {
+          calculatedAmount: 4761n,
+          consumedAmount: 10000n,
+          feeAmount: 5000n,
+          sqrtRatioNext: 357296485266985386636543337803356622028n,
+        },
+      );
+    });
 
-  it("max limit token0 output", () => {
-    assert.deepStrictEqual(
-      computeStep({
-        sqrtRatio: 0x100000000000000000000000000000000n,
-        liquidity: 100000n,
-        sqrtRatioLimit: MAX_SQRT_RATIO,
-        amount: -10000n,
-        isToken1: false,
-        fee: 1n << 127n,
-      }),
-      {
-        calculatedAmount: 22224n,
-        consumedAmount: -10000n,
-        feeAmount: 11112n,
-        sqrtRatioNext: 378091518801042737181527341590853568285n,
-      },
-    );
-  });
+    it(`${chain}: max limit token0 output`, () => {
+      assert.deepStrictEqual(
+        computeStep({
+          sqrtRatio: 0x100000000000000000000000000000000n,
+          liquidity: 100000n,
+          sqrtRatioLimit: max,
+          amount: -10000n,
+          isToken1: false,
+          fee: 1n << 127n,
+        }),
+        {
+          calculatedAmount: 22224n,
+          consumedAmount: -10000n,
+          feeAmount: 11112n,
+          sqrtRatioNext: 378091518801042737181527341590853568285n,
+        },
+      );
+    });
 
-  it("max limit token1 output", () => {
-    assert.deepStrictEqual(
-      computeStep({
-        sqrtRatio: 0x100000000000000000000000000000000n,
-        liquidity: 100000n,
-        sqrtRatioLimit: MIN_SQRT_RATIO,
-        amount: -10000n,
-        isToken1: true,
-        fee: 1n << 127n,
-      }),
-      {
-        calculatedAmount: 22224n,
-        consumedAmount: -10000n,
-        feeAmount: 11112n,
-        sqrtRatioNext: 306254130228844617117037146688591390310n,
-      },
-    );
-  });
+    it(`${chain}: max limit token1 output`, () => {
+      assert.deepStrictEqual(
+        computeStep({
+          sqrtRatio: 0x100000000000000000000000000000000n,
+          liquidity: 100000n,
+          sqrtRatioLimit: min,
+          amount: -10000n,
+          isToken1: true,
+          fee: 1n << 127n,
+        }),
+        {
+          calculatedAmount: 22224n,
+          consumedAmount: -10000n,
+          feeAmount: 11112n,
+          sqrtRatioNext: 306254130228844617117037146688591390310n,
+        },
+      );
+    });
+  }
 
   it("limited token0 output", () => {
     assert.deepStrictEqual(
