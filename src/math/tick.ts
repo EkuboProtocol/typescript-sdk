@@ -1,11 +1,45 @@
+import { Chain } from "./chain";
 import { MAX_U256 } from "./constants";
 
-export const MIN_TICK = -88722835 as const;
-export const MAX_TICK = 88722835 as const;
-export const MAX_TICK_SPACING = 698605 as const;
-export const MIN_SQRT_RATIO: bigint = 18447191164202170524n as const;
-export const MAX_SQRT_RATIO: bigint =
+export const EVM_MIN_TICK = -88722835 as const;
+export const EVM_MAX_TICK = 88722835 as const;
+export const EVM_MAX_TICK_SPACING = 698605 as const;
+export const EVM_MIN_SQRT_RATIO: bigint = 18447191164202170524n as const;
+export const EVM_MAX_SQRT_RATIO: bigint =
   6276949602062853172742588666607187473671941430179807625216n as const;
+
+export const STARKNET_MIN_TICK = -88722883 as const;
+export const STARKNET_MAX_TICK = 88722883 as const;
+export const STARKNET_MAX_SQRT_RATIO: bigint =
+  6277100250585753475930931601400621808602321654880405518632n as const;
+export const STARKNET_MIN_SQRT_RATIO: bigint = 18446748437148339061n as const;
+export const STARKNET_MAX_TICK_SPACING = 354892 as const;
+
+export const CHAIN_PARAMS: Record<
+  Chain,
+  {
+    MIN_TICK: number;
+    MAX_TICK: number;
+    MIN_SQRT_RATIO: bigint;
+    MAX_SQRT_RATIO: bigint;
+    MAX_TICK_SPACING: number;
+  }
+> = {
+  evm: {
+    MIN_TICK: EVM_MIN_TICK,
+    MAX_TICK: EVM_MAX_TICK,
+    MIN_SQRT_RATIO: EVM_MIN_SQRT_RATIO,
+    MAX_SQRT_RATIO: EVM_MAX_SQRT_RATIO,
+    MAX_TICK_SPACING: EVM_MAX_TICK_SPACING,
+  },
+  starknet: {
+    MIN_TICK: STARKNET_MIN_TICK,
+    MAX_TICK: STARKNET_MAX_TICK,
+    MIN_SQRT_RATIO: STARKNET_MIN_SQRT_RATIO,
+    MAX_SQRT_RATIO: STARKNET_MAX_SQRT_RATIO,
+    MAX_TICK_SPACING: STARKNET_MAX_TICK_SPACING,
+  },
+};
 
 // sqrt ratio float encoding (96-bit custom float used on mainnet)
 const SQRT_RATIO_FLOAT_BITMASK = 0xc00000000000000000000000n;
@@ -16,7 +50,10 @@ const TWO_POW_160 = 1n << 160n;
 const TWO_POW_128 = 1n << 128n;
 const TWO_POW_96 = 1n << 96n;
 
-export function toSqrtRatio(tick: number): bigint {
+export function toSqrtRatio(tick: number, chain: Chain): bigint {
+  const MIN_TICK = CHAIN_PARAMS[chain].MIN_TICK;
+  const MAX_TICK = CHAIN_PARAMS[chain].MAX_TICK;
+
   if (tick < MIN_TICK || tick > MAX_TICK)
     throw new Error(`Invalid tick: ${tick}`);
   let sign = tick < 0;
@@ -109,13 +146,15 @@ export function toSqrtRatio(tick: number): bigint {
   }
 
   ratio =
-    ratio >= TWO_POW_160
-      ? (ratio >> 98n) << 98n
-      : ratio >= TWO_POW_128
-        ? (ratio >> 66n) << 66n
-        : ratio >= TWO_POW_96
-          ? (ratio >> 34n) << 34n
-          : (ratio >> 2n) << 2n;
+    chain === "evm"
+      ? ratio >= TWO_POW_160
+        ? (ratio >> 98n) << 98n
+        : ratio >= TWO_POW_128
+          ? (ratio >> 66n) << 66n
+          : ratio >= TWO_POW_96
+            ? (ratio >> 34n) << 34n
+            : (ratio >> 2n) << 2n
+      : ratio;
 
   return ratio;
 }
