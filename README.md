@@ -231,4 +231,4 @@ bun run build
 
 ## License
 
-UNLICENSED
+[MIT](./LICENSE)
