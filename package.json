@@ -14,8 +14,8 @@
   "files": [
     "dist"
   ],
-  "author": "Moody Salem",
-  "license": "UNLICENSED",
+  "author": "Ekubo Inc <eng@ekubo.org>",
+  "license": "MIT",
   "packageManager": "bun@1.3.3",
   "devDependencies": {
     "@types/bun": "^1.3.4",
