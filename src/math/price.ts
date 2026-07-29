@@ -58,11 +58,13 @@ export function nextSqrtRatioFromAmount0(
 
     return result;
   } else {
-    const denomP1 = numerator1 / sqrtRatioFixed;
-
-    const denom = denomP1 + amount0Fixed;
-    const quotient = numerator1 / denom;
-    const remainder = numerator1 % denom;
+    // Keep the full-precision rational form used by Starknet contracts v5+.
+    // Dividing numerator1 by sqrtRatio first loses the remainder and can move
+    // the result substantially at high prices and low liquidity.
+    const numerator = numerator1 * sqrtRatioFixed;
+    const denominator = numerator1 + amount0Fixed * sqrtRatioFixed;
+    const quotient = numerator / denominator;
+    const remainder = numerator % denominator;
 
     if (remainder === 0n) return quotient;
     const sum = quotient + 1n;
