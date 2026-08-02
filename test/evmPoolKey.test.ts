@@ -5,6 +5,8 @@ import {
   encodeEvmConcentratedPoolConfig,
   encodeEvmPoolKey,
   encodeEvmStableswapPoolConfig,
+  encodeEvmV2ConcentratedPoolConfig,
+  encodeEvmV2StableswapPoolConfig,
 } from "../src/evmPoolKey";
 
 const token0 = "0x0000000000000000000000000000000000000000" as const;
@@ -65,5 +67,26 @@ describe("EVM v3 pool keys", () => {
       encoded,
     );
   });
-});
 
+  it("packs legacy v2 concentrated and stableswap configs", () => {
+    expect(
+      encodeEvmV2ConcentratedPoolConfig({
+        fee: 7n,
+        tickSpacing: 1024n,
+        extension: token1,
+      }),
+    ).toBe(
+      "0x1111111111111111111111111111111111111111000000000000000700000400",
+    );
+    expect(
+      encodeEvmV2StableswapPoolConfig({
+        fee: 7n,
+        centerTick: -32,
+        amplification: 127,
+        extension: token1,
+      }),
+    ).toBe(
+      "0x111111111111111111111111111111111111111100000000000000077ffffffe",
+    );
+  });
+});

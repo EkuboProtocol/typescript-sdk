@@ -35,6 +35,45 @@ const UINT64_MAX = (1n << 64n) - 1n;
 const UINT31_MAX = (1n << 31n) - 1n;
 const UINT32_MASK = (1n << 32n) - 1n;
 
+/** Packs an Ekubo EVM v2 concentrated/full-range pool config. */
+export function encodeEvmV2ConcentratedPoolConfig(input: {
+  fee: bigint;
+  tickSpacing: bigint;
+  extension: Hex;
+}): Hex {
+  assertUint64(input.fee, "fee");
+  if (input.tickSpacing < 0n || input.tickSpacing > UINT32_MASK) {
+    throw new Error("tickSpacing must be a uint32");
+  }
+  return toSizedHex(
+    (addressToBigInt(input.extension) << 96n) |
+      (input.fee << 32n) |
+      input.tickSpacing,
+    32,
+  );
+}
+
+/** Packs an Ekubo EVM v2 stableswap pool config. */
+export function encodeEvmV2StableswapPoolConfig(input: {
+  fee: bigint;
+  centerTick: number;
+  amplification: number;
+  extension: Hex;
+}): Hex {
+  assertUint64(input.fee, "fee");
+  const typeConfig = encodeStableswapTypeConfig(
+    input.centerTick,
+    input.amplification,
+    127,
+  );
+  return toSizedHex(
+    (addressToBigInt(input.extension) << 96n) |
+      (input.fee << 32n) |
+      typeConfig,
+    32,
+  );
+}
+
 /** Packs an Ekubo EVM v3 concentrated-pool config. */
 export function encodeEvmConcentratedPoolConfig(input: {
   fee: bigint;
@@ -68,23 +107,11 @@ export function encodeEvmStableswapPoolConfig(input: {
   extension: Hex;
 }): Hex {
   assertUint64(input.fee, "fee");
-  if (
-    !Number.isInteger(input.amplification) ||
-    input.amplification < 0 ||
-    input.amplification > 26
-  ) {
-    throw new Error("amplification must be an integer from 0 to 26");
-  }
-  if (!Number.isInteger(input.centerTick) || input.centerTick % 16 !== 0) {
-    throw new Error("centerTick must be an integer multiple of 16");
-  }
-  const encodedCenter = input.centerTick / 16;
-  if (encodedCenter < -(1 << 23) || encodedCenter > (1 << 23) - 1) {
-    throw new Error("centerTick does not fit signed 24 bits after scaling");
-  }
-  const typeConfig =
-    (BigInt(input.amplification) << 24n) |
-    BigInt(encodedCenter & 0xff_ffff);
+  const typeConfig = encodeStableswapTypeConfig(
+    input.centerTick,
+    input.amplification,
+    26,
+  );
   return toSizedHex(
     (addressToBigInt(input.extension) << 96n) |
       (input.fee << 32n) |
@@ -148,6 +175,32 @@ function assertUint64(value: bigint, label: string) {
   if (value < 0n || value > UINT64_MAX) {
     throw new Error(`${label} must be a uint64`);
   }
+}
+
+function encodeStableswapTypeConfig(
+  centerTick: number,
+  amplification: number,
+  maximumAmplification: number,
+) {
+  if (
+    !Number.isInteger(amplification) ||
+    amplification < 0 ||
+    amplification > maximumAmplification
+  ) {
+    throw new Error(
+      `amplification must be an integer from 0 to ${maximumAmplification}`,
+    );
+  }
+  if (!Number.isInteger(centerTick) || centerTick % 16 !== 0) {
+    throw new Error("centerTick must be an integer multiple of 16");
+  }
+  const encodedCenter = centerTick / 16;
+  if (encodedCenter < -(1 << 23) || encodedCenter > (1 << 23) - 1) {
+    throw new Error("centerTick does not fit signed 24 bits after scaling");
+  }
+  return (
+    (BigInt(amplification) << 24n) | BigInt(encodedCenter & 0xff_ffff)
+  );
 }
 
 function addressToBigInt(value: Hex): bigint {

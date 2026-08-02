@@ -1,6 +1,6 @@
 {
   "name": "@ekubo/sdk",
-  "version": "0.0.9-alpha.0",
+  "version": "0.0.10-alpha.0",
   "private": false,
   "description": "Shared math and protocol encoding utilities for Ekubo",
   "repository": {

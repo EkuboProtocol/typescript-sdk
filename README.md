@@ -63,20 +63,20 @@ Selects chain-specific tick and sqrt ratio bounds.
 
 ### Constants
 
-| Name | Description |
-|---|---|
-| `MAX_U128` | Maximum value of a 128-bit unsigned integer |
-| `MAX_U256` | Maximum value of a 256-bit unsigned integer |
-| `EVM_MIN_TICK` | Minimum tick for EVM |
-| `EVM_MAX_TICK` | Maximum tick for EVM |
-| `EVM_MIN_SQRT_RATIO` | Minimum sqrt ratio for EVM |
-| `EVM_MAX_SQRT_RATIO` | Maximum sqrt ratio for EVM |
-| `EVM_MAX_TICK_SPACING` | Maximum tick spacing for EVM |
-| `STARKNET_MIN_TICK` | Minimum tick for Starknet |
-| `STARKNET_MAX_TICK` | Maximum tick for Starknet |
-| `STARKNET_MIN_SQRT_RATIO` | Minimum sqrt ratio for Starknet |
-| `STARKNET_MAX_SQRT_RATIO` | Maximum sqrt ratio for Starknet |
-| `STARKNET_MAX_TICK_SPACING` | Maximum tick spacing for Starknet |
+| Name                        | Description                                 |
+| --------------------------- | ------------------------------------------- |
+| `MAX_U128`                  | Maximum value of a 128-bit unsigned integer |
+| `MAX_U256`                  | Maximum value of a 256-bit unsigned integer |
+| `EVM_MIN_TICK`              | Minimum tick for EVM                        |
+| `EVM_MAX_TICK`              | Maximum tick for EVM                        |
+| `EVM_MIN_SQRT_RATIO`        | Minimum sqrt ratio for EVM                  |
+| `EVM_MAX_SQRT_RATIO`        | Maximum sqrt ratio for EVM                  |
+| `EVM_MAX_TICK_SPACING`      | Maximum tick spacing for EVM                |
+| `STARKNET_MIN_TICK`         | Minimum tick for Starknet                   |
+| `STARKNET_MAX_TICK`         | Maximum tick for Starknet                   |
+| `STARKNET_MIN_SQRT_RATIO`   | Minimum sqrt ratio for Starknet             |
+| `STARKNET_MAX_SQRT_RATIO`   | Maximum sqrt ratio for Starknet             |
+| `STARKNET_MAX_TICK_SPACING` | Maximum tick spacing for Starknet           |
 
 ---
 
@@ -141,10 +141,10 @@ Returns:
 
 ```ts
 {
-  consumedAmount: bigint;   // amount of the specified token consumed
+  consumedAmount: bigint; // amount of the specified token consumed
   calculatedAmount: bigint; // amount of the other token
-  sqrtRatioNext: bigint;    // sqrt ratio after the step
-  feeAmount: bigint;        // fee collected
+  sqrtRatioNext: bigint; // sqrt ratio after the step
+  feeAmount: bigint; // fee collected
 }
 ```
 
@@ -237,6 +237,25 @@ const config = encodeEvmConcentratedPoolConfig({
 });
 const poolId = deriveEvmPoolId({ token0, token1, config }, keccak256);
 ```
+
+Legacy position readers can use `encodeEvmV2ConcentratedPoolConfig` and
+`encodeEvmV2StableswapPoolConfig`; v2 configs deliberately omit the v3 pool
+type discriminator.
+
+### EVM Protocol Keys and Salted IDs
+
+The SDK also owns the exact protocol encodings shared by applications and
+transaction preparers:
+
+- `encodeEvmAuctionConfig` / `decodeEvmAuctionConfig`
+- `encodeEvmTwammOrderConfig` / `decodeEvmTwammOrderConfig`
+- `calculateEvmTwammMaxSaleRate`
+- `deriveEvmAuctionTokenId`, `deriveEvmTwammOrderTokenId`, and
+  `deriveEvmVeTokenId`
+- `deriveEvmIndexedSalt`
+
+Hashing functions accept a caller-supplied Keccak-256 implementation, keeping
+the SDK dependency-free while using the same ABI preimages everywhere.
 
 ---
 
