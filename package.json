@@ -1,8 +1,8 @@
 {
   "name": "@ekubo/sdk",
-  "version": "0.0.8-alpha.1",
+  "version": "0.0.9-alpha.0",
   "private": false,
-  "description": "Shared math utilities for Ekubo (chain-agnostic)",
+  "description": "Shared math and protocol encoding utilities for Ekubo",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/EkuboProtocol/typescript-sdk.git"

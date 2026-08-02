@@ -1,6 +1,7 @@
 # @ekubo/sdk
 
-Chain-agnostic TypeScript math utilities for [Ekubo Protocol](https://ekubo.org), supporting both EVM and Starknet.
+Shared TypeScript math and protocol encoding utilities for
+[Ekubo Protocol](https://ekubo.org), supporting EVM and Starknet.
 
 ## Installation
 
@@ -12,7 +13,8 @@ bun add @ekubo/sdk
 
 ## Usage
 
-All functions are pure, dependency-free, and operate on native `bigint` values.
+All functions are pure and dependency-free. Exact protocol integers use native
+`bigint` values.
 
 ```ts
 import {
@@ -211,6 +213,30 @@ Computes the next sqrt ratio for a TWAMM (Time-Weighted Average Market Maker) po
 #### `msb(x: bigint): number`
 
 Returns the position of the most significant bit of `x`.
+
+---
+
+### EVM v3 Pool Keys
+
+`encodeEvmConcentratedPoolConfig` and `encodeEvmStableswapPoolConfig` pack the
+32-byte v3 config used by Core. `decodeEvmPoolConfig` returns the extension,
+exact `bigint` Q64 fee, pool discriminator, and type-specific parameters.
+
+`encodeEvmPoolKey` returns the exact 96-byte ABI encoding hashed by Core.
+`deriveEvmPoolId` accepts a Keccak-256 function supplied by the consumer, which
+keeps the SDK dependency-free:
+
+```ts
+import { deriveEvmPoolId, encodeEvmConcentratedPoolConfig } from "@ekubo/sdk";
+import { keccak256 } from "viem";
+
+const config = encodeEvmConcentratedPoolConfig({
+  fee: 2n ** 64n / 10_000n,
+  tickSpacing: 200,
+  extension: "0x0000000000000000000000000000000000000000",
+});
+const poolId = deriveEvmPoolId({ token0, token1, config }, keccak256);
+```
 
 ---
 
