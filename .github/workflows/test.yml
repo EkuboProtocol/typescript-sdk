@@ -13,4 +13,5 @@ jobs:
         with:
           bun-version: latest
       - run: bun ci
+      - run: bun run lint
       - run: bun test

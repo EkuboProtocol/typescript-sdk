@@ -62,6 +62,14 @@ export function exp(x: bigint): bigint {
 }
 
 // Computes e^x where x is a fixed point 64.64 number that is less than the real number 2
+//
+// Binary exponentiation, unrolled one bit at a time with a per-bit magic
+// constant. The branch count is the point: each `if` is one bit of x and one
+// factor of the product, and the constants must stay bit-for-bit identical to
+// the on-chain implementation for TWAMM projections to match execution.
+// Restructuring this into a loop over a table would change the rounding of the
+// intermediate products, so it is exempted rather than refactored.
+// eslint-disable-next-line complexity -- unrolled fixed-point exponentiation; must match the on-chain constants exactly
 function expInner(x: bigint): bigint {
   if (x >= 0x20000000000000000n) {
     throw new Error("Invalid input");

@@ -50,6 +50,13 @@ const TWO_POW_160 = 1n << 160n;
 const TWO_POW_128 = 1n << 128n;
 const TWO_POW_96 = 1n << 96n;
 
+// Binary exponentiation, unrolled one bit at a time with a per-bit magic
+// constant. The branch count is the point: each `if` is one bit of the tick and
+// one factor of the product, and the constants must stay bit-for-bit identical
+// to the on-chain implementation for quotes to match execution. Restructuring
+// this into a loop over a table would change the rounding of the intermediate
+// products, so it is exempted rather than refactored.
+// eslint-disable-next-line complexity -- unrolled fixed-point exponentiation; must match the on-chain constants exactly
 export function toSqrtRatio(tick: number, chain: Chain): bigint {
   const MIN_TICK = CHAIN_PARAMS[chain].MIN_TICK;
   const MAX_TICK = CHAIN_PARAMS[chain].MAX_TICK;
