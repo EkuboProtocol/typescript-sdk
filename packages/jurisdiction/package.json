@@ -1,0 +1,59 @@
+{
+  "name": "@ekubo/jurisdiction",
+  "version": "0.1.0",
+  "description": "Stateless Ekubo EIP-712 jurisdiction proofs, verified by one native/Wasm implementation",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EkuboProtocol/typescript-sdk.git",
+    "directory": "packages/jurisdiction"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "workerd": "./dist/worker.js",
+      "default": "./dist/index.js"
+    },
+    "./worker": {
+      "types": "./dist/index.d.ts",
+      "workerd": "./dist/worker.js",
+      "worker": "./dist/worker.js",
+      "bun": "./dist/index.js",
+      "node": "./dist/index.js",
+      "default": "./dist/worker.js"
+    },
+    "./schema": {
+      "types": "./dist/schema.d.ts",
+      "default": "./dist/schema.js"
+    },
+    "./protocol.json": "./protocol.json",
+    "./message": {
+      "types": "./dist/common.d.ts",
+      "default": "./dist/common.js"
+    }
+  },
+  "files": [
+    "dist",
+    "protocol.json",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "bun scripts/build.ts",
+    "test": "bun test",
+    "prepack": "bun run build"
+  },
+  "peerDependencies": {
+    "viem": "^2.49.0",
+    "zod": "^4.4.3"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

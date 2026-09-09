@@ -14,4 +14,4 @@ jobs:
           bun-version: latest
       - run: bun ci
       - run: bun run lint
-      - run: bun test
+      - run: bun test src test

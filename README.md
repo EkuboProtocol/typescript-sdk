@@ -277,3 +277,11 @@ bun run build
 ## License
 
 [MIT](./LICENSE)
+
+## Jurisdiction verification
+
+[`packages/jurisdiction`](packages/jurisdiction/README.md) is an independently
+versioned `@ekubo/jurisdiction` npm package and `ekubo-jurisdiction` Rust crate.
+It verifies the same stateless EIP-712 declaration in native Rust, Cloudflare
+Workers, and browser clients using a single Rust implementation compiled to Wasm.
+It is separate from the protocol math SDK and has its own build and release.

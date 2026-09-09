@@ -8,7 +8,7 @@ const rules = { complexity: ["error", 10] };
 
 export default [
   {
-    ignores: ["node_modules/**", "dist/**", "build/**", ".astro/**", "generated/**"],
+    ignores: ["node_modules/**", "dist/**", "build/**", ".astro/**", "generated/**", "**/dist/**", "**/target/**"],
   },
   {
     files: ["**/*.{ts,tsx,mts,cts}"],

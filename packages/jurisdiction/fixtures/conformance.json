@@ -1,0 +1,666 @@
+[
+  {
+    "name": "one week",
+    "proof": {
+      "typed_data": {
+        "domain": {
+          "name": "Ekubo Jurisdiction Attestation",
+          "version": "1"
+        },
+        "primaryType": "JurisdictionAttestation",
+        "types": {
+          "JurisdictionAttestation": [
+            {
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "name": "jurisdictionCode",
+              "type": "string"
+            },
+            {
+              "name": "statement",
+              "type": "string"
+            },
+            {
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "wallet": "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1",
+          "jurisdictionCode": "DE",
+          "statement": "I attest that my legal domicile is the jurisdiction identified by jurisdictionCode (ISO 3166-1 alpha-2). Ekubo may use this declaration to check access to restricted assets until expiresAt. This signature does not authorize a transaction.",
+          "issuedAt": 1800000000,
+          "expiresAt": 1800604800
+        }
+      },
+      "signature": "0xee2f845b60377bf1975b3668e53dd3409601992c9c04a6a3c3508c18cde4c8452684fc503678f27f93234d2534a05acd714b71d0c35a31d8cfcbc6d467f0171e1c"
+    },
+    "now": 1800000000,
+    "expected": "DE"
+  },
+  {
+    "name": "shorter window",
+    "proof": {
+      "typed_data": {
+        "domain": {
+          "name": "Ekubo Jurisdiction Attestation",
+          "version": "1"
+        },
+        "primaryType": "JurisdictionAttestation",
+        "types": {
+          "JurisdictionAttestation": [
+            {
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "name": "jurisdictionCode",
+              "type": "string"
+            },
+            {
+              "name": "statement",
+              "type": "string"
+            },
+            {
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "wallet": "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1",
+          "jurisdictionCode": "FR",
+          "statement": "I attest that my legal domicile is the jurisdiction identified by jurisdictionCode (ISO 3166-1 alpha-2). Ekubo may use this declaration to check access to restricted assets until expiresAt. This signature does not authorize a transaction.",
+          "issuedAt": 1800000000,
+          "expiresAt": 1800000060
+        }
+      },
+      "signature": "0x644ae1256fcb2964bf2c064a09f29568c7c248d61d8ee6e81911e3e5ba4369bb797ee766809c9664a9d1562ae5e68413b1fd9d3c28f370006fe793b3a23b07781b"
+    },
+    "now": 1800000000,
+    "expected": "FR"
+  },
+  {
+    "name": "exact expiry",
+    "proof": {
+      "typed_data": {
+        "domain": {
+          "name": "Ekubo Jurisdiction Attestation",
+          "version": "1"
+        },
+        "primaryType": "JurisdictionAttestation",
+        "types": {
+          "JurisdictionAttestation": [
+            {
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "name": "jurisdictionCode",
+              "type": "string"
+            },
+            {
+              "name": "statement",
+              "type": "string"
+            },
+            {
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "wallet": "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1",
+          "jurisdictionCode": "DE",
+          "statement": "I attest that my legal domicile is the jurisdiction identified by jurisdictionCode (ISO 3166-1 alpha-2). Ekubo may use this declaration to check access to restricted assets until expiresAt. This signature does not authorize a transaction.",
+          "issuedAt": 1799999940,
+          "expiresAt": 1800000000
+        }
+      },
+      "signature": "0xdaf9563b1b2c54e6f4544ab853614d19317880541a2c9167e43539aff0053b414633ece634d9d15624242f3a2e50bbc7f0300daf45a30aee3380609f324867cb1c"
+    },
+    "now": 1800000000,
+    "expected": "invalid_time"
+  },
+  {
+    "name": "future issuance",
+    "proof": {
+      "typed_data": {
+        "domain": {
+          "name": "Ekubo Jurisdiction Attestation",
+          "version": "1"
+        },
+        "primaryType": "JurisdictionAttestation",
+        "types": {
+          "JurisdictionAttestation": [
+            {
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "name": "jurisdictionCode",
+              "type": "string"
+            },
+            {
+              "name": "statement",
+              "type": "string"
+            },
+            {
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "wallet": "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1",
+          "jurisdictionCode": "DE",
+          "statement": "I attest that my legal domicile is the jurisdiction identified by jurisdictionCode (ISO 3166-1 alpha-2). Ekubo may use this declaration to check access to restricted assets until expiresAt. This signature does not authorize a transaction.",
+          "issuedAt": 1800000001,
+          "expiresAt": 1800000060
+        }
+      },
+      "signature": "0xa403ae971a5027c041a2d5758c5f5d60f08f67d5ccbab3d49dd26285492449ef2e03bee954c20d49469c3fb6c4fe88fddc5c015c04d2846d372ca3975fd4d5e61b"
+    },
+    "now": 1800000000,
+    "expected": "invalid_time"
+  },
+  {
+    "name": "overlong window",
+    "proof": {
+      "typed_data": {
+        "domain": {
+          "name": "Ekubo Jurisdiction Attestation",
+          "version": "1"
+        },
+        "primaryType": "JurisdictionAttestation",
+        "types": {
+          "JurisdictionAttestation": [
+            {
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "name": "jurisdictionCode",
+              "type": "string"
+            },
+            {
+              "name": "statement",
+              "type": "string"
+            },
+            {
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "wallet": "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1",
+          "jurisdictionCode": "DE",
+          "statement": "I attest that my legal domicile is the jurisdiction identified by jurisdictionCode (ISO 3166-1 alpha-2). Ekubo may use this declaration to check access to restricted assets until expiresAt. This signature does not authorize a transaction.",
+          "issuedAt": 1800000000,
+          "expiresAt": 1800604801
+        }
+      },
+      "signature": "0xc52ef25cc0beb847c0f0f362f0d75e2566130dbb012658a5534d46b073ca24c969a8e4821ce5a01105693fe49df64cecdea9a5ff781b96a4be548f39fba3756b1b"
+    },
+    "now": 1800000000,
+    "expected": "invalid_time"
+  },
+  {
+    "name": "zero window",
+    "proof": {
+      "typed_data": {
+        "domain": {
+          "name": "Ekubo Jurisdiction Attestation",
+          "version": "1"
+        },
+        "primaryType": "JurisdictionAttestation",
+        "types": {
+          "JurisdictionAttestation": [
+            {
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "name": "jurisdictionCode",
+              "type": "string"
+            },
+            {
+              "name": "statement",
+              "type": "string"
+            },
+            {
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "wallet": "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1",
+          "jurisdictionCode": "DE",
+          "statement": "I attest that my legal domicile is the jurisdiction identified by jurisdictionCode (ISO 3166-1 alpha-2). Ekubo may use this declaration to check access to restricted assets until expiresAt. This signature does not authorize a transaction.",
+          "issuedAt": 1800000000,
+          "expiresAt": 1800000000
+        }
+      },
+      "signature": "0x5deb6858c642b3f8db7869affcda2f3eb5bbfa2b1c03378e15911fb57805408260c68e1922ca9e1b3f3ec065aeee38f617043c5e52985df850280efd06e5fcd51c"
+    },
+    "now": 1800000000,
+    "expected": "invalid_time"
+  },
+  {
+    "name": "unknown jurisdiction",
+    "proof": {
+      "typed_data": {
+        "domain": {
+          "name": "Ekubo Jurisdiction Attestation",
+          "version": "1"
+        },
+        "primaryType": "JurisdictionAttestation",
+        "types": {
+          "JurisdictionAttestation": [
+            {
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "name": "jurisdictionCode",
+              "type": "string"
+            },
+            {
+              "name": "statement",
+              "type": "string"
+            },
+            {
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "wallet": "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1",
+          "jurisdictionCode": "ZZ",
+          "statement": "I attest that my legal domicile is the jurisdiction identified by jurisdictionCode (ISO 3166-1 alpha-2). Ekubo may use this declaration to check access to restricted assets until expiresAt. This signature does not authorize a transaction.",
+          "issuedAt": 1800000000,
+          "expiresAt": 1800000060
+        }
+      },
+      "signature": "0x3ebbf242d2ba572027cf6053969f9dbb667c8d5053b175b4c1bf92cdf09d6c0141acbc713519aca94df21c9045998ef3329de1f66041247bf04f5b3e4be9c4521c"
+    },
+    "now": 1800000000,
+    "expected": "invalid_jurisdiction"
+  },
+  {
+    "name": "lowercase jurisdiction",
+    "proof": {
+      "typed_data": {
+        "domain": {
+          "name": "Ekubo Jurisdiction Attestation",
+          "version": "1"
+        },
+        "primaryType": "JurisdictionAttestation",
+        "types": {
+          "JurisdictionAttestation": [
+            {
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "name": "jurisdictionCode",
+              "type": "string"
+            },
+            {
+              "name": "statement",
+              "type": "string"
+            },
+            {
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "wallet": "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1",
+          "jurisdictionCode": "de",
+          "statement": "I attest that my legal domicile is the jurisdiction identified by jurisdictionCode (ISO 3166-1 alpha-2). Ekubo may use this declaration to check access to restricted assets until expiresAt. This signature does not authorize a transaction.",
+          "issuedAt": 1800000000,
+          "expiresAt": 1800000060
+        }
+      },
+      "signature": "0x2f8ddb7f3a45ca89a4c4ccf6ba3721f8b527d46791256b7f9b78e63ae0c4228a0b9dd8fbb312887f118feffb2325d3dc89a8bf8afefdadeac190ef30d726a97f1c"
+    },
+    "now": 1800000000,
+    "expected": "invalid_jurisdiction"
+  },
+  {
+    "name": "wrong wallet",
+    "proof": {
+      "typed_data": {
+        "domain": {
+          "name": "Ekubo Jurisdiction Attestation",
+          "version": "1"
+        },
+        "primaryType": "JurisdictionAttestation",
+        "types": {
+          "JurisdictionAttestation": [
+            {
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "name": "jurisdictionCode",
+              "type": "string"
+            },
+            {
+              "name": "statement",
+              "type": "string"
+            },
+            {
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "wallet": "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1",
+          "jurisdictionCode": "DE",
+          "statement": "I attest that my legal domicile is the jurisdiction identified by jurisdictionCode (ISO 3166-1 alpha-2). Ekubo may use this declaration to check access to restricted assets until expiresAt. This signature does not authorize a transaction.",
+          "issuedAt": 1800000000,
+          "expiresAt": 1800604800
+        }
+      },
+      "signature": "0xee2f845b60377bf1975b3668e53dd3409601992c9c04a6a3c3508c18cde4c8452684fc503678f27f93234d2534a05acd714b71d0c35a31d8cfcbc6d467f0171e1c"
+    },
+    "now": 1800000000,
+    "wallet": "0x5050A4F4b3f9338C3472dcC01A87C76A144b3c9c",
+    "expected": "wrong_wallet"
+  },
+  {
+    "name": "wrong signer",
+    "proof": {
+      "typed_data": {
+        "domain": {
+          "name": "Ekubo Jurisdiction Attestation",
+          "version": "1"
+        },
+        "primaryType": "JurisdictionAttestation",
+        "types": {
+          "JurisdictionAttestation": [
+            {
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "name": "jurisdictionCode",
+              "type": "string"
+            },
+            {
+              "name": "statement",
+              "type": "string"
+            },
+            {
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "wallet": "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1",
+          "jurisdictionCode": "DE",
+          "statement": "I attest that my legal domicile is the jurisdiction identified by jurisdictionCode (ISO 3166-1 alpha-2). Ekubo may use this declaration to check access to restricted assets until expiresAt. This signature does not authorize a transaction.",
+          "issuedAt": 1800000000,
+          "expiresAt": 1800000060
+        }
+      },
+      "signature": "0xa6a7608c5b35159fc29540401714e29cde828d3af74ebf6e7c06c20351236e290f241890e01f183f1187ca12a6b7df7eaa62cefac0a46443ea596eda971d56461c"
+    },
+    "now": 1800000000,
+    "expected": "invalid_signature"
+  },
+  {
+    "name": "other domain",
+    "proof": {
+      "typed_data": {
+        "domain": {
+          "name": "other",
+          "version": "1"
+        },
+        "primaryType": "JurisdictionAttestation",
+        "types": {
+          "JurisdictionAttestation": [
+            {
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "name": "jurisdictionCode",
+              "type": "string"
+            },
+            {
+              "name": "statement",
+              "type": "string"
+            },
+            {
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "wallet": "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1",
+          "jurisdictionCode": "DE",
+          "statement": "I attest that my legal domicile is the jurisdiction identified by jurisdictionCode (ISO 3166-1 alpha-2). Ekubo may use this declaration to check access to restricted assets until expiresAt. This signature does not authorize a transaction.",
+          "issuedAt": 1800000000,
+          "expiresAt": 1800604800
+        }
+      },
+      "signature": "0xee2f845b60377bf1975b3668e53dd3409601992c9c04a6a3c3508c18cde4c8452684fc503678f27f93234d2534a05acd714b71d0c35a31d8cfcbc6d467f0171e1c"
+    },
+    "now": 1800000000,
+    "expected": "invalid_payload"
+  },
+  {
+    "name": "other statement",
+    "proof": {
+      "typed_data": {
+        "domain": {
+          "name": "Ekubo Jurisdiction Attestation",
+          "version": "1"
+        },
+        "primaryType": "JurisdictionAttestation",
+        "types": {
+          "JurisdictionAttestation": [
+            {
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "name": "jurisdictionCode",
+              "type": "string"
+            },
+            {
+              "name": "statement",
+              "type": "string"
+            },
+            {
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "wallet": "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1",
+          "jurisdictionCode": "DE",
+          "statement": "other",
+          "issuedAt": 1800000000,
+          "expiresAt": 1800604800
+        }
+      },
+      "signature": "0xee2f845b60377bf1975b3668e53dd3409601992c9c04a6a3c3508c18cde4c8452684fc503678f27f93234d2534a05acd714b71d0c35a31d8cfcbc6d467f0171e1c"
+    },
+    "now": 1800000000,
+    "expected": "invalid_payload"
+  },
+  {
+    "name": "altered country",
+    "proof": {
+      "typed_data": {
+        "domain": {
+          "name": "Ekubo Jurisdiction Attestation",
+          "version": "1"
+        },
+        "primaryType": "JurisdictionAttestation",
+        "types": {
+          "JurisdictionAttestation": [
+            {
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "name": "jurisdictionCode",
+              "type": "string"
+            },
+            {
+              "name": "statement",
+              "type": "string"
+            },
+            {
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "wallet": "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1",
+          "jurisdictionCode": "US",
+          "statement": "I attest that my legal domicile is the jurisdiction identified by jurisdictionCode (ISO 3166-1 alpha-2). Ekubo may use this declaration to check access to restricted assets until expiresAt. This signature does not authorize a transaction.",
+          "issuedAt": 1800000000,
+          "expiresAt": 1800604800
+        }
+      },
+      "signature": "0xee2f845b60377bf1975b3668e53dd3409601992c9c04a6a3c3508c18cde4c8452684fc503678f27f93234d2534a05acd714b71d0c35a31d8cfcbc6d467f0171e1c"
+    },
+    "now": 1800000000,
+    "expected": "invalid_signature"
+  },
+  {
+    "name": "unknown unsigned field",
+    "proof": {
+      "typed_data": {
+        "domain": {
+          "name": "Ekubo Jurisdiction Attestation",
+          "version": "1"
+        },
+        "primaryType": "JurisdictionAttestation",
+        "types": {
+          "JurisdictionAttestation": [
+            {
+              "name": "wallet",
+              "type": "address"
+            },
+            {
+              "name": "jurisdictionCode",
+              "type": "string"
+            },
+            {
+              "name": "statement",
+              "type": "string"
+            },
+            {
+              "name": "issuedAt",
+              "type": "uint256"
+            },
+            {
+              "name": "expiresAt",
+              "type": "uint256"
+            }
+          ]
+        },
+        "message": {
+          "wallet": "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1",
+          "jurisdictionCode": "DE",
+          "statement": "I attest that my legal domicile is the jurisdiction identified by jurisdictionCode (ISO 3166-1 alpha-2). Ekubo may use this declaration to check access to restricted assets until expiresAt. This signature does not authorize a transaction.",
+          "issuedAt": 1800000000,
+          "expiresAt": 1800604800
+        }
+      },
+      "signature": "0xee2f845b60377bf1975b3668e53dd3409601992c9c04a6a3c3508c18cde4c8452684fc503678f27f93234d2534a05acd714b71d0c35a31d8cfcbc6d467f0171e1c",
+      "extra": true
+    },
+    "now": 1800000000,
+    "expected": "invalid_payload"
+  },
+  {
+    "name": "duplicate signature",
+    "proof": "{\"typed_data\":{\"domain\":{\"name\":\"Ekubo Jurisdiction Attestation\",\"version\":\"1\"},\"primaryType\":\"JurisdictionAttestation\",\"types\":{\"JurisdictionAttestation\":[{\"name\":\"wallet\",\"type\":\"address\"},{\"name\":\"jurisdictionCode\",\"type\":\"string\"},{\"name\":\"statement\",\"type\":\"string\"},{\"name\":\"issuedAt\",\"type\":\"uint256\"},{\"name\":\"expiresAt\",\"type\":\"uint256\"}]},\"message\":{\"wallet\":\"0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1\",\"jurisdictionCode\":\"DE\",\"statement\":\"I attest that my legal domicile is the jurisdiction identified by jurisdictionCode (ISO 3166-1 alpha-2). Ekubo may use this declaration to check access to restricted assets until expiresAt. This signature does not authorize a transaction.\",\"issuedAt\":1800000000,\"expiresAt\":1800604800}},\"signature\":\"bad\",\"signature\":\"0xee2f845b60377bf1975b3668e53dd3409601992c9c04a6a3c3508c18cde4c8452684fc503678f27f93234d2534a05acd714b71d0c35a31d8cfcbc6d467f0171e1c\"}",
+    "now": 1800000000,
+    "expected": "invalid_payload"
+  },
+  {
+    "name": "malformed json",
+    "proof": "{",
+    "now": 1800000000,
+    "expected": "invalid_payload"
+  },
+  {
+    "name": "oversized",
+    "proof": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ",
+    "now": 1800000000,
+    "expected": "invalid_payload"
+  }
+]
