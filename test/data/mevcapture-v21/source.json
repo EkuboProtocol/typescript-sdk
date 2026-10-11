@@ -1,0 +1,13 @@
+{
+  "contractCommit": "da368348238a46857d39b6db57bdb2b432c979df",
+  "designRevision": "ad3e6585-8135-431e-82af-7a177d7f5282",
+  "designVersion": 6,
+  "note": "Golden files are byte-identical to the merged contract handoff. Their rev5 labels are stale: rev6 Q1 restoration is authoritative.",
+  "sha256": {
+    "merged-abi.json": "bb464a91fc81a7ea887361186ab17eebe993c234a973b229ff37b31ab027db0e",
+    "anchorUpdates.json": "386c4083e39526b8b175ea579b24429c0df679185dcf22283c8eea8a3a65aa59",
+    "gateScenarios.json": "db05764df2d8c4e36088058b92ec39ad2076581315e5da83187f8ee0b05fcaad",
+    "schedules.json": "dbe34128af52f227fc6add073752cd619ba3b9033e93778d37398428779934cb",
+    "swaps.json": "dfaed25f180a3914a17cd6badeea0942e70bdd09c7c2afcd5d244bc24b07ff5f"
+  }
+}
