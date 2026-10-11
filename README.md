@@ -277,3 +277,8 @@ bun run build
 ## License
 
 [MIT](./LICENSE)
+## MEVCapture v2.1
+
+See [the rev-6 model and integration guide](docs/mevcapture-v21.md) for explicit
+config/state reads, integer quote replay, complete Core snapshots and errors.
+Existing v1 APIs are unchanged. No extension addresses or defaults are assumed.
