@@ -257,6 +257,34 @@ transaction preparers:
 Hashing functions accept a caller-supplied Keccak-256 implementation, keeping
 the SDK dependency-free while using the same ABI preimages everywhere.
 
+### MEVCapture v2.1 (`main` variant)
+
+`MevCaptureV21MainPool` quotes a concentrated pool on the current EVM Core
+behind the MEVCapture v2.1 `main` extension. It reproduces every `CORE.swap`
+call the extension makes: the toward call, charged away calls cut one step
+short of the next rate boundary or initialized tick, bridges onto initialized
+ticks, and the per-call surcharge passed to `accumulateAsFees` (taken from the
+output on exact input, added to the input on exact output). The first-touch
+anchor update and post-swap refresh run in `simulateSwap` and `quote`.
+
+```ts
+import { MevCaptureV21MainPool } from "@ekubo/sdk";
+
+const pool = new MevCaptureV21MainPool({
+  poolFee, // the pool key's Q0.64 fee
+  tickSpacing,
+  config, // the extension's getConfig tuple
+  state: { core: { sqrtRatio, tick, liquidity }, anchor }, // anchor: getAnchor
+  sortedTicks, // every initialized tick the swap can reach
+});
+const quote = pool.quote({ isToken1: false, amount: 10n ** 18n, now: blockTimestamp });
+```
+
+Quotes are exact only for a complete initialized-tick snapshot, because the
+extension cuts calls at Core's bitmap tick events. The replay in
+`test/mevCaptureV21Main.test.ts` checks all 21 contract vectors (266 Core
+calls) with no tolerance.
+
 ---
 
 ## Development
