@@ -1,0 +1,17 @@
+{
+  "scripts/lint.ts": {
+    "typescript(no-unnecessary-type-assertion)": {
+      "count": 3
+    }
+  },
+  "src/math/price.ts": {
+    "typescript(no-base-to-string)": {
+      "count": 1
+    }
+  },
+  "test/evmProtocol.test.ts": {
+    "typescript(no-unnecessary-type-assertion)": {
+      "count": 2
+    }
+  }
+}

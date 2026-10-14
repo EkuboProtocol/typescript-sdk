@@ -277,7 +277,11 @@ const pool = new MevCaptureV21MainPool({
   state: { core: { sqrtRatio, tick, liquidity }, anchor }, // anchor: getAnchor
   sortedTicks, // every initialized tick the swap can reach
 });
-const quote = pool.quote({ isToken1: false, amount: 10n ** 18n, now: blockTimestamp });
+const quote = pool.quote({
+  isToken1: false,
+  amount: 10n ** 18n,
+  now: blockTimestamp,
+});
 ```
 
 Quotes are exact only for a complete initialized-tick snapshot, because the

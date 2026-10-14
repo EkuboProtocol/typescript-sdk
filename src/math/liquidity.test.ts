@@ -115,7 +115,10 @@ describe("maxLiquidityForTokenAmounts", () => {
         sqrtPriceUpper: sqrtPrice,
         amount: amountQuote,
       });
-      const expected = liquidityFromBase < liquidityFromQuote ? liquidityFromBase : liquidityFromQuote;
+      const expected =
+        liquidityFromBase < liquidityFromQuote
+          ? liquidityFromBase
+          : liquidityFromQuote;
       assert.strictEqual(liquidity, expected);
 
       const baseRequired = liquidityToAmountBase({

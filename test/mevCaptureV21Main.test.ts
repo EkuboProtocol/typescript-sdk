@@ -25,9 +25,12 @@ const json = (name: string) => JSON.parse(read(name).toString("utf8"));
 
 // rust-sdk main 622e31b, tests/data/mevcapture-v21-main/SHA256SUMS
 const RUST_SDK_SHA256: Record<string, string> = {
-  "anchorUpdates.json": "386c4083e39526b8b175ea579b24429c0df679185dcf22283c8eea8a3a65aa59",
-  "gateScenarios.json": "db05764df2d8c4e36088058b92ec39ad2076581315e5da83187f8ee0b05fcaad",
-  "v21-main-quoter-vectors.json": "3dee8af33d1624e39a7e36ae51fc1d247fa87904caf7281877910589ebbc19b5",
+  "anchorUpdates.json":
+    "386c4083e39526b8b175ea579b24429c0df679185dcf22283c8eea8a3a65aa59",
+  "gateScenarios.json":
+    "db05764df2d8c4e36088058b92ec39ad2076581315e5da83187f8ee0b05fcaad",
+  "v21-main-quoter-vectors.json":
+    "3dee8af33d1624e39a7e36ae51fc1d247fa87904caf7281877910589ebbc19b5",
 };
 
 const S = 4096;
@@ -67,7 +70,11 @@ layout(
   [WIDE, [3 * S, 7 * S, L66]],
 );
 layout(
-  ["bridge_25pct_exact_in", "bridge_25pct_exact_out_dec", "bridge_1ulp_exact_in"],
+  [
+    "bridge_25pct_exact_in",
+    "bridge_25pct_exact_out_dec",
+    "bridge_1ulp_exact_in",
+  ],
   [WIDE, [2 * S, 3 * S, L66]],
 );
 layout(
@@ -84,7 +91,10 @@ layout(
     [3000 * S, 3001 * S, 1_000_000_000n],
   ],
 );
-layout(["segexp2_offgrid_ticks_inc"], [WIDE, [3 * S, 7 * S, L66 * 2n], [8 * S, 9 * S, L66]]);
+layout(
+  ["segexp2_offgrid_ticks_inc"],
+  [WIDE, [3 * S, 7 * S, L66 * 2n], [8 * S, 9 * S, L66]],
+);
 layout(
   ["spacing3000_negative_anchor_dec", "spacing3000_negative_anchor_inc"],
   [
@@ -129,7 +139,10 @@ function pool(v: Json): MevCaptureV21MainPool {
     poolFee: BigInt(v.pool.fee),
     tickSpacing: Number(v.pool.tickSpacing),
     config,
-    state: { core, anchor: new MevCaptureV21MainModel(config).initialize(core.tick, 1) },
+    state: {
+      core,
+      anchor: new MevCaptureV21MainModel(config).initialize(core.tick, 1),
+    },
     sortedTicks: ticks(v.name),
   });
 }
@@ -169,7 +182,11 @@ describe("MEVCapture v2.1 main contract vectors", () => {
       coverage[params.amount < 0n ? "exactOut" : "exactIn"]++;
       coverage[params.isToken1 ? "token1" : "token0"]++;
       if (params.skipAhead !== 0) coverage.skip++;
-      const swap = pool(v).swapThroughSegments(coreState(v.before), params, BigInt(v.anchorX16));
+      const swap = pool(v).swapThroughSegments(
+        coreState(v.before),
+        params,
+        BigInt(v.anchorX16),
+      );
 
       const actual = swap.calls.map((c) => ({
         limit: sqrtRatioToRaw(c.sqrtRatioLimit),
@@ -195,16 +212,27 @@ describe("MEVCapture v2.1 main contract vectors", () => {
         fee0: BigInt(e.fee0),
         fee1: BigInt(e.fee1),
       }));
-      expect({ name: v.name, calls: actual }).toEqual({ name: v.name, calls: expected });
+      expect({ name: v.name, calls: actual }).toEqual({
+        name: v.name,
+        calls: expected,
+      });
       callsChecked += actual.length;
 
-      expect({ name: v.name, delta0: swap.delta0, delta1: swap.delta1, after: swap.stateAfter.core }).toEqual({
+      expect({
+        name: v.name,
+        delta0: swap.delta0,
+        delta1: swap.delta1,
+        after: swap.stateAfter.core,
+      }).toEqual({
         name: v.name,
         delta0: BigInt(v.total.delta0),
         delta1: BigInt(v.total.delta1),
         after: coreState(v.after),
       });
-      const sum = swap.calls.reduce((s, c) => s + c.surcharge0 + c.surcharge1, 0n);
+      const sum = swap.calls.reduce(
+        (s, c) => s + c.surcharge0 + c.surcharge1,
+        0n,
+      );
       expect(swap.surcharge0 + swap.surcharge1).toBe(sum);
     }
     expect(callsChecked).toBe(266);
@@ -248,7 +276,11 @@ describe("MEVCapture v2.1 main contract vectors", () => {
     const quote = (now: number) => p.quote({ isToken1: true, amount, now });
     // same timestamp as initialization: no update, anchor at the initial tick (0)
     const same = quote(1);
-    const direct = p.swapThroughSegments(p.state.core, { isToken1: true, amount }, 0n);
+    const direct = p.swapThroughSegments(
+      p.state.core,
+      { isToken1: true, amount },
+      0n,
+    );
     expect(same.consumedAmount).toBe(direct.delta1);
     expect(same.calculatedAmount).toBe(-direct.delta0);
     expect(same.resources.anchorUpdates).toBe(0);
@@ -305,13 +337,22 @@ describe("MEVCapture v2.1 main anchor state machine", () => {
       const floored = ((clamp << 16n) * dt) / halfLife;
       const nextMove = expected.anchorX16 - stateIn.anchorX16;
       const absMove = nextMove < 0n ? -nextMove : nextMove;
-      if (c.passed && ((clamp << 16n) * dt) % halfLife !== 0n && absMove === floored) {
+      if (
+        c.passed &&
+        ((clamp << 16n) * dt) % halfLife !== 0n &&
+        absMove === floored
+      ) {
         // the `next` limit bound this move; on `main` the limit is one unit larger
         expected.anchorX16 += nextMove < 0n ? -1n : 1n;
         roundedUp++;
       }
       const state = { ...stateIn };
-      const gate = m.beforeSwap(state, Number(c.tick), BigInt(c.liquidity), now);
+      const gate = m.beforeSwap(
+        state,
+        Number(c.tick),
+        BigInt(c.liquidity),
+        now,
+      );
       expect({ i, gate, state }).toEqual({
         i,
         gate: { passed: c.passed, lObs: Number(c.lObs), eRef: Number(c.eRef) },
@@ -332,14 +373,27 @@ describe("MEVCapture v2.1 main anchor state machine", () => {
         if (st.op === "position") {
           m.beforePosition(state, BigInt(st.activeLiquidity), now);
         } else {
-          const gate = m.beforeSwap(state, Number(st.tick), BigInt(st.liquidity), now);
+          const gate = m.beforeSwap(
+            state,
+            Number(st.tick),
+            BigInt(st.liquidity),
+            now,
+          );
           expect(gate !== null).toBe(st.first);
           if (gate) {
-            expect(gate).toEqual({ passed: st.passed, lObs: Number(st.lObs), eRef: Number(st.eRef) });
+            expect(gate).toEqual({
+              passed: st.passed,
+              lObs: Number(st.lObs),
+              eRef: Number(st.eRef),
+            });
           }
           m.afterSwap(state, BigInt(st.liquidityAfter), now);
         }
-        expect({ scenario: c.name, i, state }).toEqual({ scenario: c.name, i, state: anchor(st.expected) });
+        expect({ scenario: c.name, i, state }).toEqual({
+          scenario: c.name,
+          i,
+          state: anchor(st.expected),
+        });
         count++;
       });
     }
@@ -407,7 +461,9 @@ describe("MEVCapture v2.1 main anchor state machine", () => {
           expect(touched.anchorX16).toBe(N * ceilDiv(units, tau64));
           const single = displaced();
           m.beforeSwap(single, tick, L66, n);
-          expect(single.anchorX16).toBe(ceilDiv(units * (N < tau64 ? N : tau64), tau64));
+          expect(single.anchorX16).toBe(
+            ceilDiv(units * (N < tau64 ? N : tau64), tau64),
+          );
           expect(touched.anchorX16 >= single.anchorX16).toBe(true);
           expect(touched.anchorX16 * tau64 <= N * units + N * tau64).toBe(true);
         }
