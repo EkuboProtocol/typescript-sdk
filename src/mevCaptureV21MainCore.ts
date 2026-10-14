@@ -177,7 +177,10 @@ function amount0Delta(a: bigint, b: bigint, liquidity: bigint, up: boolean) {
 function amount1Delta(a: bigint, b: bigint, liquidity: bigint, up: boolean) {
   const [lower, upper] = a < b ? [a, b] : [b, a];
   if (liquidity === 0n || lower === upper) return 0n;
-  return checkedU128(mulDiv(liquidity, upper - lower, Q128, up), "AmountDeltaOverflow");
+  return checkedU128(
+    mulDiv(liquidity, upper - lower, Q128, up),
+    "AmountDeltaOverflow",
+  );
 }
 
 /** `null` where the Rust reference returns a price-math error (the step then goes to the limit). */
@@ -201,7 +204,12 @@ function nextFromAmount1(s: bigint, liquidity: bigint, amount: bigint) {
   return next > MAX_U256 ? null : next;
 }
 
-function nextFromAmount(s: bigint, liquidity: bigint, amount: bigint, isToken1: boolean) {
+function nextFromAmount(
+  s: bigint,
+  liquidity: bigint,
+  amount: bigint,
+  isToken1: boolean,
+) {
   if (amount === 0n) return s;
   // rounded toward the starting price for input, away from it for output
   if (isToken1) {
@@ -228,7 +236,14 @@ interface StepInput {
   fee: bigint;
 }
 
-function stepToLimit({ sqrtRatio, liquidity, limit, amount, isToken1, fee }: StepInput): Step {
+function stepToLimit({
+  sqrtRatio,
+  liquidity,
+  limit,
+  amount,
+  isToken1,
+  fee,
+}: StepInput): Step {
   const exactOut = amount < 0n;
   const [specifiedDelta, calculatedDelta] = isToken1
     ? [amount1Delta, amount0Delta]
@@ -237,22 +252,48 @@ function stepToLimit({ sqrtRatio, liquidity, limit, amount, isToken1, fee }: Ste
   const calculated = calculatedDelta(limit, sqrtRatio, liquidity, exactOut);
   if (exactOut) {
     const before = evmAmountBeforeFee(calculated, fee);
-    return { consumed: -checkedI128(specified), calculated: before, fee: before - calculated, next: limit };
+    return {
+      consumed: -checkedI128(specified),
+      calculated: before,
+      fee: before - calculated,
+      next: limit,
+    };
   }
   const before = evmAmountBeforeFee(specified, fee);
-  return { consumed: checkedI128(before), calculated, fee: before - specified, next: limit };
+  return {
+    consumed: checkedI128(before),
+    calculated,
+    fee: before - specified,
+    next: limit,
+  };
 }
 
 function stepWithin(input: StepInput, next: bigint, inputFee: bigint): Step {
   const { sqrtRatio, liquidity, amount, isToken1, fee } = input;
   if (next === sqrtRatio) {
-    return { consumed: amount, calculated: 0n, fee: amount < 0n ? -amount : amount, next };
+    return {
+      consumed: amount,
+      calculated: 0n,
+      fee: amount < 0n ? -amount : amount,
+      next,
+    };
   }
   const exactOut = amount < 0n;
-  const excluding = (isToken1 ? amount0Delta : amount1Delta)(next, sqrtRatio, liquidity, exactOut);
-  if (!exactOut) return { consumed: amount, calculated: excluding, fee: inputFee, next };
+  const excluding = (isToken1 ? amount0Delta : amount1Delta)(
+    next,
+    sqrtRatio,
+    liquidity,
+    exactOut,
+  );
+  if (!exactOut)
+    return { consumed: amount, calculated: excluding, fee: inputFee, next };
   const including = evmAmountBeforeFee(excluding, fee);
-  return { consumed: amount, calculated: including, fee: including - excluding, next };
+  return {
+    consumed: amount,
+    calculated: including,
+    fee: including - excluding,
+    next,
+  };
 }
 
 /** Core's `computeStep` with a Q0.64 fee and stored-precision rounding. */
@@ -261,20 +302,32 @@ function computeStep(input: StepInput): Step {
   if (amount === 0n || sqrtRatio === limit) {
     return { consumed: 0n, calculated: 0n, fee: 0n, next: sqrtRatio };
   }
-  const increasing = (amount < 0n) !== isToken1;
-  if ((limit < sqrtRatio) === increasing) {
-    return fail("SqrtRatioLimitWrongDirection", "compute step: wrong direction");
+  const increasing = amount < 0n !== isToken1;
+  if (limit < sqrtRatio === increasing) {
+    return fail(
+      "SqrtRatioLimitWrongDirection",
+      "compute step: wrong direction",
+    );
   }
-  if (liquidity === 0n) return { consumed: 0n, calculated: 0n, fee: 0n, next: limit };
+  if (liquidity === 0n)
+    return { consumed: 0n, calculated: 0n, fee: 0n, next: limit };
   const inputFee = amount < 0n ? 0n : evmComputeFee(amount, fee);
-  const next = nextFromAmount(sqrtRatio, liquidity, amount - inputFee, isToken1);
-  if (next !== null && (next <= limit) === increasing) {
+  const next = nextFromAmount(
+    sqrtRatio,
+    liquidity,
+    amount - inputFee,
+    isToken1,
+  );
+  if (next !== null && next <= limit === increasing) {
     return stepWithin(input, next, inputFee);
   }
   return stepToLimit(input);
 }
 
-function lowerBound<T>(items: readonly T[], before: (item: T) => boolean): number {
+function lowerBound<T>(
+  items: readonly T[],
+  before: (item: T) => boolean,
+): number {
   let lo = 0;
   let hi = items.length;
   while (lo < hi) {
@@ -316,7 +369,8 @@ export class CoreTickSearch {
       const wordEnd = Math.floor(raw / 256) * 256 + 255;
       const i = lowerBound(this.ticks, (t) => this.raw(t.index) < raw);
       const t = this.ticks[i];
-      if (t !== undefined && this.raw(t.index) <= wordEnd) return { tick: t.index, index: i };
+      if (t !== undefined && this.raw(t.index) <= wordEnd)
+        return { tick: t.index, index: i };
       next = this.tickOf(wordEnd);
       if (next >= EVM_MAX_TICK) return { tick: EVM_MAX_TICK, index: null };
       if (skip === 0) return { tick: next, index: null };
@@ -378,18 +432,38 @@ export function coreSwap(
   const { amount, limit } = params;
   if (!isValidSqrtRatio(limit)) return fail("InvalidSqrtRatioLimit");
   if (amount === 0n || state.sqrtRatio === limit) {
-    return { delta0: 0n, delta1: 0n, feesPaid: 0n, state, steps: 0, crossed: 0 };
+    return {
+      delta0: 0n,
+      delta1: 0n,
+      feesPaid: 0n,
+      state,
+      steps: 0,
+      crossed: 0,
+    };
   }
   const increasing = params.isToken1 !== amount < 0n;
-  if ((limit < state.sqrtRatio) === increasing) return fail("SqrtRatioLimitWrongDirection");
-  const s: LoopState = { ...state, remaining: amount, calculated: 0n, feesPaid: 0n, steps: 0, crossed: 0 };
+  if (limit < state.sqrtRatio === increasing)
+    return fail("SqrtRatioLimitWrongDirection");
+  const s: LoopState = {
+    ...state,
+    remaining: amount,
+    calculated: 0n,
+    feesPaid: 0n,
+    steps: 0,
+    crossed: 0,
+  };
   do {
     coreSwapStep(search, s, params, increasing);
   } while (s.remaining !== 0n && s.sqrtRatio !== limit);
   return coreSwapResult(s, params);
 }
 
-function coreSwapStep(search: CoreTickSearch, s: LoopState, p: CoreSwapParams, increasing: boolean) {
+function coreSwapStep(
+  search: CoreTickSearch,
+  s: LoopState,
+  p: CoreSwapParams,
+  increasing: boolean,
+) {
   const event = search.search(s.tick, increasing);
   const nextRatio = tickToSqrtRatio(event.tick);
   const limited = increasing === nextRatio < p.limit ? nextRatio : p.limit;
@@ -403,7 +477,8 @@ function coreSwapStep(search: CoreTickSearch, s: LoopState, p: CoreSwapParams, i
   });
   s.remaining = checkedI128(s.remaining - step.consumed);
   s.calculated = checkedU128(s.calculated + step.calculated, "AmountOverflow");
-  s.feesPaid = s.feesPaid + step.fee > MAX_U128 ? MAX_U128 : s.feesPaid + step.fee;
+  s.feesPaid =
+    s.feesPaid + step.fee > MAX_U128 ? MAX_U128 : s.feesPaid + step.fee;
   s.steps += 1;
   if (step.next === nextRatio) {
     crossTick(search, s, event, nextRatio, increasing);
@@ -424,7 +499,10 @@ function crossTick(
   s.tick = increasing ? event.tick : event.tick - 1;
   if (event.index === null) return;
   const delta = search.ticks[event.index].liquidityDelta;
-  s.liquidity = checkedU128(s.liquidity + (increasing ? delta : -delta), "LiquidityOverflow");
+  s.liquidity = checkedU128(
+    s.liquidity + (increasing ? delta : -delta),
+    "LiquidityOverflow",
+  );
   s.crossed += 1;
 }
 

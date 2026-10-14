@@ -15,7 +15,11 @@ import {
 
 const CHAIN_CASES = [
   { chain: "evm", min: EVM_MIN_SQRT_RATIO, max: EVM_MAX_SQRT_RATIO },
-  { chain: "starknet", min: STARKNET_MIN_SQRT_RATIO, max: STARKNET_MAX_SQRT_RATIO },
+  {
+    chain: "starknet",
+    min: STARKNET_MIN_SQRT_RATIO,
+    max: STARKNET_MAX_SQRT_RATIO,
+  },
 ] as const;
 
 describe("isPriceIncreasing", () => {

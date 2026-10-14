@@ -67,9 +67,7 @@ export function encodeEvmV2StableswapPoolConfig(input: {
     127,
   );
   return toSizedHex(
-    (addressToBigInt(input.extension) << 96n) |
-      (input.fee << 32n) |
-      typeConfig,
+    (addressToBigInt(input.extension) << 96n) | (input.fee << 32n) | typeConfig,
     32,
   );
 }
@@ -92,9 +90,7 @@ export function encodeEvmConcentratedPoolConfig(input: {
   }
   const typeConfig = (1n << 31n) | BigInt(input.tickSpacing);
   return toSizedHex(
-    (addressToBigInt(input.extension) << 96n) |
-      (input.fee << 32n) |
-      typeConfig,
+    (addressToBigInt(input.extension) << 96n) | (input.fee << 32n) | typeConfig,
     32,
   );
 }
@@ -113,9 +109,7 @@ export function encodeEvmStableswapPoolConfig(input: {
     26,
   );
   return toSizedHex(
-    (addressToBigInt(input.extension) << 96n) |
-      (input.fee << 32n) |
-      typeConfig,
+    (addressToBigInt(input.extension) << 96n) | (input.fee << 32n) | typeConfig,
     32,
   );
 }
@@ -198,9 +192,7 @@ function encodeStableswapTypeConfig(
   if (encodedCenter < -(1 << 23) || encodedCenter > (1 << 23) - 1) {
     throw new Error("centerTick does not fit signed 24 bits after scaling");
   }
-  return (
-    (BigInt(amplification) << 24n) | BigInt(encodedCenter & 0xff_ffff)
-  );
+  return (BigInt(amplification) << 24n) | BigInt(encodedCenter & 0xff_ffff);
 }
 
 function addressToBigInt(value: Hex): bigint {

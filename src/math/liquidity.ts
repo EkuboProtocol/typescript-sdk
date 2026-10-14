@@ -50,7 +50,11 @@ export function maxLiquidityForTokenAmounts({
   const [lower, upper] = orderBounds(sqrtPriceLower, sqrtPriceUpper);
 
   if (sqrtPrice <= lower) {
-    return maxLiquidityForBaseToken({ sqrtPriceLower: lower, sqrtPriceUpper: upper, amount: amountBase });
+    return maxLiquidityForBaseToken({
+      sqrtPriceLower: lower,
+      sqrtPriceUpper: upper,
+      amount: amountBase,
+    });
   } else if (sqrtPrice < upper) {
     const liquidityBase = maxLiquidityForBaseToken({
       sqrtPriceLower: sqrtPrice,
@@ -64,7 +68,11 @@ export function maxLiquidityForTokenAmounts({
     });
     return liquidityBase < liquidityQuote ? liquidityBase : liquidityQuote;
   } else {
-    return maxLiquidityForQuoteToken({ sqrtPriceLower: lower, sqrtPriceUpper: upper, amount: amountQuote });
+    return maxLiquidityForQuoteToken({
+      sqrtPriceLower: lower,
+      sqrtPriceUpper: upper,
+      amount: amountQuote,
+    });
   }
 }
 
@@ -109,15 +117,31 @@ export function maxLiquidityForSpecifiedAmount({
 
   if (sqrtPrice <= lower) {
     return "base" in amount
-      ? maxLiquidityForBaseToken({ sqrtPriceLower: lower, sqrtPriceUpper: upper, amount: amount.base })
+      ? maxLiquidityForBaseToken({
+          sqrtPriceLower: lower,
+          sqrtPriceUpper: upper,
+          amount: amount.base,
+        })
       : 0n;
   } else if (sqrtPrice < upper) {
     return "base" in amount
-      ? maxLiquidityForBaseToken({ sqrtPriceLower: sqrtPrice, sqrtPriceUpper: upper, amount: amount.base })
-      : maxLiquidityForQuoteToken({ sqrtPriceLower: lower, sqrtPriceUpper: sqrtPrice, amount: amount.quote });
+      ? maxLiquidityForBaseToken({
+          sqrtPriceLower: sqrtPrice,
+          sqrtPriceUpper: upper,
+          amount: amount.base,
+        })
+      : maxLiquidityForQuoteToken({
+          sqrtPriceLower: lower,
+          sqrtPriceUpper: sqrtPrice,
+          amount: amount.quote,
+        });
   } else {
     return "quote" in amount
-      ? maxLiquidityForQuoteToken({ sqrtPriceLower: lower, sqrtPriceUpper: upper, amount: amount.quote })
+      ? maxLiquidityForQuoteToken({
+          sqrtPriceLower: lower,
+          sqrtPriceUpper: upper,
+          amount: amount.quote,
+        })
       : 0n;
   }
 }
@@ -146,13 +170,21 @@ export function amountsFromSpecifiedAmount({
       return {
         maxLiquidity,
         base: amount.base,
-        quote: liquidityToAmountQuote({ liquidity: maxLiquidity, sqrtPriceLower: lower, sqrtPriceUpper: upper }),
+        quote: liquidityToAmountQuote({
+          liquidity: maxLiquidity,
+          sqrtPriceLower: lower,
+          sqrtPriceUpper: upper,
+        }),
       };
     } else if (sqrtPrice < upper) {
       return {
         maxLiquidity,
         base: amount.base,
-        quote: liquidityToAmountQuote({ liquidity: maxLiquidity, sqrtPriceLower: sqrtPrice, sqrtPriceUpper: upper }),
+        quote: liquidityToAmountQuote({
+          liquidity: maxLiquidity,
+          sqrtPriceLower: sqrtPrice,
+          sqrtPriceUpper: upper,
+        }),
       };
     } else {
       return { maxLiquidity, base: amount.base, quote: 0n };
@@ -164,13 +196,21 @@ export function amountsFromSpecifiedAmount({
       return {
         maxLiquidity,
         quote: amount.quote,
-        base: liquidityToAmountBase({ liquidity: maxLiquidity, sqrtPriceLower: lower, sqrtPriceUpper: sqrtPrice }),
+        base: liquidityToAmountBase({
+          liquidity: maxLiquidity,
+          sqrtPriceLower: lower,
+          sqrtPriceUpper: sqrtPrice,
+        }),
       };
     } else {
       return {
         maxLiquidity,
         quote: amount.quote,
-        base: liquidityToAmountBase({ liquidity: maxLiquidity, sqrtPriceLower: lower, sqrtPriceUpper: upper }),
+        base: liquidityToAmountBase({
+          liquidity: maxLiquidity,
+          sqrtPriceLower: lower,
+          sqrtPriceUpper: upper,
+        }),
       };
     }
   }
