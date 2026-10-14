@@ -15,8 +15,8 @@ import {
 
 const MINTER = "0x1111111111111111111111111111111111111111" as const;
 const CONTRACT = "0x2222222222222222222222222222222222222222" as const;
-const SALT = `0x${"33".repeat(32)}` as Hex;
-const HASH = `0x${"ff".repeat(32)}` as Hex;
+const SALT: Hex = `0x${"33".repeat(32)}`;
+const HASH: Hex = `0x${"ff".repeat(32)}`;
 const identityHash = (_value: Hex) => HASH;
 
 describe("EVM protocol configs", () => {

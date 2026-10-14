@@ -6,7 +6,9 @@ const toBig = (value: unknown, name: string): bigint => {
     return BigInt(value as any);
   } catch (err) {
     const printed =
-      value === null || value === undefined ? String(value) : value.toString();
+      typeof value === "object" && value !== null
+        ? Object.prototype.toString.call(value)
+        : String(value);
     const ctor =
       value && typeof value === "object" && "constructor" in value
         ? (value as { constructor: { name: string } }).constructor.name
