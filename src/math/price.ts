@@ -94,7 +94,6 @@ export function nextSqrtRatioFromAmount1(
 
   // because quotient is rounded down, this price movement is also rounded towards sqrt_ratio
   if (amount1Fixed < 0n) {
-    // adding amount1, taking out amount0
     const res = sqrtRatioFixed + quotient;
     if (res < 0n) {
       return null;
@@ -109,7 +108,6 @@ export function nextSqrtRatioFromAmount1(
       }
     }
   } else {
-    // adding amount1, taking out amount0, price goes up
     const res = sqrtRatioFixed + quotient;
     if (res > MAX_U256) {
       return null;

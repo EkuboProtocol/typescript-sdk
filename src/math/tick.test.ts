@@ -152,9 +152,7 @@ describe("approximateNumberOfTickSpacingsCrossed", () => {
 
 describe("sqrt ratio float <-> fixed conversions", () => {
   it("decodes float sqrt ratio", () => {
-    const floatValue =
-      0x123456789abcden | // mantissa
-      (32n << 89n); // exponent
+    const floatValue = 0x123456789abcden | (32n << 89n);
     const expectedFixed =
       (floatValue & 0x3fffffffffffffffffffffffn) << (2n + 32n);
     assert.strictEqual(floatSqrtRatioToFixed(floatValue), expectedFixed);

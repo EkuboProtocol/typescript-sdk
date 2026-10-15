@@ -1,11 +1,3 @@
-// MEVCapture v2.1 on the current EVM Core (`main` variant, EKU-946 rev 10
-// section (b-main)), ported from rust-sdk `quoting::pools::mev_capture_v21_main`.
-//
-// The extension charges no `minFee`. Each charged Core call is cut one
-// representable SqrtRatio step short of the next initialized tick, and its
-// surcharge is added to the calculated token through `Core.accumulateAsFees`.
-// Every initialized tick is crossed by its own uncharged one-step bridge call.
-// This is independent of the `next` variant model.
 import {
   EVM_MAX_SQRT_RATIO,
   EVM_MAX_TICK,
@@ -246,7 +238,7 @@ export class MevCaptureV21MainModel {
     const fraction = (BigInt(dt % halfLife) << 64n) / BigInt(halfLife);
     const magnitude = (shifted << 64n) / mevCaptureV21Exp2(fraction);
     const decayed = offset < 0n ? -magnitude : magnitude;
-    // F-13: rounds up on `main` (the `next` variant floors), so every update
+    // rounds up on `main` (the `next` variant floors), so every update
     // that consumes elapsed time grants at least one 2^-16 tick
     const hl = BigInt(halfLife);
     const limit =
@@ -325,13 +317,11 @@ class Grid {
     this.jLin = config.jLin;
   }
 
-  /** `_boundary`. */
   boundary(k: number): bigint {
     if (k <= this.jLin) return this.g1 + BigInt(k - 1) * this.w16;
     return this.gJ + ((1n << BigInt(k - this.jLin + 1)) - 2n) * this.w16;
   }
 
-  /** `_firstSegment`. */
   firstSegment(p: bigint): number {
     const p16 = p << 16n;
     if (p16 < this.g1) return 1;
@@ -340,7 +330,6 @@ class Grid {
   }
 }
 
-/** `_surcharge`: `min(maxFee - poolFee, ceil(slopeK * poolFee * twiceMid / (spacing << 18)))`. */
 function surcharge(
   config: MevCaptureV21MainConfig,
   poolFee: bigint,
@@ -462,7 +451,6 @@ const cloneState = (
   anchor: { ...s.anchor },
 });
 
-/** Mutable context of one `_swapThroughSegments` run. */
 interface SegmentRun {
   params: Required<MevCaptureV21MainSwapParams>;
   increasing: boolean;
