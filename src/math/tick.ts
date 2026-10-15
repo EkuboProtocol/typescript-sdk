@@ -41,7 +41,6 @@ export const CHAIN_PARAMS: Record<
   },
 };
 
-// sqrt ratio float encoding (96-bit custom float used on mainnet)
 const SQRT_RATIO_FLOAT_BITMASK = 0xc00000000000000000000000n;
 const SQRT_RATIO_FLOAT_NOT_BITMASK = 0x3fffffffffffffffffffffffn;
 const SQRT_RATIO_FLOAT_EXPONENTS: readonly bigint[] = [0n, 32n, 64n, 96n];
@@ -50,12 +49,6 @@ const TWO_POW_160 = 1n << 160n;
 const TWO_POW_128 = 1n << 128n;
 const TWO_POW_96 = 1n << 96n;
 
-// Binary exponentiation, unrolled one bit at a time with a per-bit magic
-// constant. The branch count is the point: each `if` is one bit of the tick and
-// one factor of the product, and the constants must stay bit-for-bit identical
-// to the on-chain implementation for quotes to match execution. Restructuring
-// this into a loop over a table would change the rounding of the intermediate
-// products, so it is exempted rather than refactored.
 // eslint-disable-next-line complexity -- unrolled fixed-point exponentiation; must match the on-chain constants exactly
 export function toSqrtRatio(tick: number, chain: Chain): bigint {
   const MIN_TICK = CHAIN_PARAMS[chain].MIN_TICK;
@@ -179,14 +172,12 @@ export function approximateNumberOfTickSpacingsCrossed(
   return Math.floor(Math.abs(logPriceDiff / (tickSpacing * 251)));
 }
 
-// Convert the on-chain float sqrt ratio to the fixed-point representation used in math.
 export function floatSqrtRatioToFixed(sqrtRatioFloat: bigint): bigint {
   const exponent = (sqrtRatioFloat & SQRT_RATIO_FLOAT_BITMASK) >> 89n;
   const mantissa = sqrtRatioFloat & SQRT_RATIO_FLOAT_NOT_BITMASK;
   return mantissa << (2n + exponent);
 }
 
-// Convert a fixed-point sqrt ratio to the compact float format expected on mainnet.
 export function fixedSqrtRatioToFloat(sqrtRatio: bigint): bigint {
   if (sqrtRatio < 0n) throw new Error("Sqrt ratio must be non-negative");
 

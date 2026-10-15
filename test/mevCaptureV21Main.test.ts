@@ -1,6 +1,3 @@
-// Differential replay of the MEVCapture v2.1 `main` contract traces, ported from
-// rust-sdk `tests/mev_capture_v21_main_vectors.rs`. Every Core call, surcharge,
-// total and final state must match with no tolerance.
 import { describe, expect, test } from "bun:test";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
@@ -36,7 +33,6 @@ const RUST_SDK_SHA256: Record<string, string> = {
 const S = 4096;
 const L66 = 1n << 66n;
 
-// Parsed fixture JSON; every field is checked by value in the assertions.
 type Json = any;
 
 /**
@@ -239,8 +235,6 @@ describe("MEVCapture v2.1 main contract vectors", () => {
     for (const n of Object.values(coverage)) expect(n).toBeGreaterThan(0);
   });
 
-  // Every charged call with a nonzero fee is one `FeesAccumulated` event on the
-  // calculated token; bridges and toward calls never are.
   test("surcharge events match charged calls", () => {
     for (const v of vectors()) {
       for (const e of v.calls as Json[]) {
@@ -268,13 +262,11 @@ describe("MEVCapture v2.1 main contract vectors", () => {
     }
   });
 
-  // `quote` runs the first-touch anchor update before the segments and the refresh after.
   test("quote runs the anchor update, then the segments", () => {
     const v = vectors().find((x) => x.name === "inc_exact_in_cut_bridge_rate");
     const p = pool(v);
     const amount = 1_000_000_000_000_000_000n;
     const quote = (now: number) => p.quote({ isToken1: true, amount, now });
-    // same timestamp as initialization: no update, anchor at the initial tick (0)
     const same = quote(1);
     const direct = p.swapThroughSegments(
       p.state.core,
@@ -285,7 +277,6 @@ describe("MEVCapture v2.1 main contract vectors", () => {
     expect(same.calculatedAmount).toBe(-direct.delta0);
     expect(same.resources.anchorUpdates).toBe(0);
     expect(direct.surcharge0 > 0n).toBe(true);
-    // a later timestamp runs the gate (passes: lObs 67 + mGate >= eRef 0)
     const later = quote(13);
     expect(later.resources.anchorUpdates).toBe(1);
     expect(later.stateAfter.anchor.lastUpdateTime).toBe(13);
@@ -308,19 +299,12 @@ const anchorModel = (c: Json) =>
     slopeK: Number(c.slopeK),
     segmentExp: Number(c.segmentExp),
     jLin: Number(c.jLin),
-    // the `next` tuple's Q0.16 maxFee; the anchor update does not read it
     maxFee: BigInt(c.maxFee) << 48n,
     clampTicks: Number(c.clampTicks),
     mGate: Number(c.mGate),
   });
 
 describe("MEVCapture v2.1 main anchor state machine", () => {
-  // `_refresh` and `beforeUpdatePosition` are identical between the `main`
-  // extension and the merged `next` one (`da368348`). `_anchorUpdate` differs
-  // only in the movement allowance, which `main` rounds up (EKU-1582 `17b5e50`,
-  // V12 F-13) where `next` floors. Cases whose `next` move was bound by a
-  // fractional floored allowance must move exactly one more unit; every other
-  // case and field replays unchanged.
   test("anchor updates replay all seven fields with the F-13 ceiling", () => {
     const v = json("anchorUpdates.json");
     const m = anchorModel(v.config);
@@ -342,7 +326,6 @@ describe("MEVCapture v2.1 main anchor state machine", () => {
         ((clamp << 16n) * dt) % halfLife !== 0n &&
         absMove === floored
       ) {
-        // the `next` limit bound this move; on `main` the limit is one unit larger
         expected.anchorX16 += nextMove < 0n ? -1n : 1n;
         roundedUp++;
       }
@@ -400,7 +383,6 @@ describe("MEVCapture v2.1 main anchor state machine", () => {
     expect(count).toBe(1785);
   });
 
-  // Initialized at tick 0 at time 0 with the gate open; the callers push the pool tick away.
   const displaced = (): MevCaptureV21MainAnchor => ({
     lastUpdateTime: 0,
     lRefTime: 0,
@@ -422,9 +404,6 @@ describe("MEVCapture v2.1 main anchor state machine", () => {
     });
   const ceilDiv = (a: bigint, b: bigint) => (a + b - 1n) / b;
 
-  // Ports `test_f13_zero_amount_forwards_every_second_cannot_freeze_anchor`:
-  // with CLAMP_TICKS = 1 and HALF_LIFE = 2^20 each per-second update grants one
-  // unit, and a single update over the same 32 s grants ceil(2^16 * 32 / 2^20) = 2.
   test("F-13: per-second updates cannot freeze the anchor", () => {
     const m = clampModel(1 << 20, 1);
     const touched = displaced();
@@ -438,7 +417,6 @@ describe("MEVCapture v2.1 main anchor state machine", () => {
     expect(single.anchorX16).toBe(2n);
   });
 
-  // Ports `test_park_with_dust_allowance_rounds_up`.
   test("F-13: dust allowance rounds up", () => {
     const m = clampModel(120, 2500);
     const state = displaced();
@@ -446,7 +424,6 @@ describe("MEVCapture v2.1 main anchor state machine", () => {
     expect(state.anchorX16).toBe(ceilDiv((2500n << 16n) * 7n, 120n));
   });
 
-  // Ports `test_fuzz_frequent_updates_never_slow_anchor` over a deterministic grid.
   test("F-13: frequent updates never slow the anchor", () => {
     for (const tau of [1, 2, 3, 7, 120, 1000, 65_537, 1 << 20]) {
       for (const clamp of [1, 2, 5, 2500, 4096]) {

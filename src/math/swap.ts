@@ -42,10 +42,6 @@ export function computeFee(amount: bigint, fee: bigint) {
   }
 }
 
-// The swap ran into the price limit before consuming the whole amount, so the
-// step is bounded by the limit and the deltas are computed from it. Split out
-// of computeStep because it is a self-contained ending, not a case that
-// interleaves with the rest of the function.
 function stepToLimit({
   sqrtRatio,
   liquidity,
@@ -75,7 +71,6 @@ function stepToLimit({
     isExactOutput,
   );
 
-  // The fee is charged on whichever side the caller did not specify.
   if (isExactOutput) {
     const beforeFee = amountBeforeFee(calculatedAmountDelta, fee);
     return {
@@ -124,8 +119,6 @@ export function computeStep({
     return noOp(sqrtRatioLimit);
   }
 
-  // On an exact-output swap the caller states the amount they want out, so the
-  // fee is added on top afterwards rather than taken out of the input here.
   const priceImpactAmount =
     amount < 0n ? amount : amount - computeFee(amount, fee);
 
@@ -158,10 +151,6 @@ export function computeStep({
   });
 }
 
-// The whole amount fits before the price limit, so the step ends at the price
-// the amount itself implies. Split out of computeStep for the same reason as
-// stepToLimit: it is one of the function's endings, not a case woven through
-// the rest of it.
 function stepWithinRange({
   sqrtRatio,
   sqrtRatioNext,
@@ -179,7 +168,6 @@ function stepWithinRange({
   isToken1: boolean;
   fee: bigint;
 }): SwapResult {
-  // The amount was too small to move the price at all, so all of it is fee.
   if (sqrtRatioNext === sqrtRatio) {
     return {
       consumedAmount: amount,

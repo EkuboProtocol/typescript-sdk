@@ -1,8 +1,3 @@
-// Integer emulation of the current EVM Core's concentrated-liquidity swap, as
-// the MEVCapture v2.1 `main` extension drives it. Mirrors rust-sdk
-// `quoting::pools::mev_capture_v21_main` (Q0.64 fees, raw SqrtRatio rounding,
-// bitmap words and skipAhead), so cut points land exactly where Core's tick
-// searches stop.
 import {
   EVM_MAX_SQRT_RATIO,
   EVM_MAX_TICK,
@@ -296,7 +291,6 @@ function stepWithin(input: StepInput, next: bigint, inputFee: bigint): Step {
   };
 }
 
-/** Core's `computeStep` with a Q0.64 fee and stored-precision rounding. */
 function computeStep(input: StepInput): Step {
   const { sqrtRatio, liquidity, limit, amount, isToken1, fee } = input;
   if (amount === 0n || sqrtRatio === limit) {
@@ -508,7 +502,6 @@ function crossTick(
 
 function coreSwapResult(s: LoopState, p: CoreSwapParams): CoreSwapResult {
   const specified = checkedI128(p.amount - s.remaining);
-  // `toInt128(max(type(int128).min, calculatedAmount))`
   let calculated: bigint;
   if (p.amount < 0n) calculated = checkedI128(s.calculated);
   else calculated = s.calculated >= 1n << 127n ? MIN_I128 : -s.calculated;
