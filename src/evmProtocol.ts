@@ -1,4 +1,5 @@
 import type { Hex } from "./evmPoolKey";
+import { amountBeforeFee, computeFee } from "./math/swap";
 
 const UINT24_MAX = (1n << 24n) - 1n;
 const UINT32_MAX = (1n << 32n) - 1n;
@@ -6,6 +7,7 @@ const UINT64_MAX = (1n << 64n) - 1n;
 const UINT112_MAX = (1n << 112n) - 1n;
 const UINT192_MASK = (1n << 192n) - 1n;
 const UINT256_MAX = (1n << 256n) - 1n;
+const INT128_MAX = (1n << 127n) - 1n;
 
 export type EvmAuctionConfigInput = Hex | bigint;
 
@@ -26,6 +28,35 @@ export interface EvmTwammOrderConfig {
   startTime: bigint;
   endTime: bigint;
 }
+
+/** A bid of the EVM continuous auction extension, as returned by `auctions(poolId)`. */
+export interface EvmContinuousAuctionBid {
+  bidder: Hex;
+  rate: bigint;
+  executor: Hex;
+  /** First second in which the bid holds the pool. */
+  start: bigint;
+  /** First second in which the bid no longer holds the pool. */
+  end: bigint;
+  /** Fee charged to swappers other than the executor, as a 0.32 fixed-point fraction. */
+  fee: bigint;
+}
+
+/** The settled bid schedule of a continuous auction pool. */
+export interface EvmContinuousAuctionState {
+  current: EvmContinuousAuctionBid;
+  /** The next bid, starting at `lastSettled + 1`, or null if none is scheduled. */
+  next: EvmContinuousAuctionBid | null;
+  lastSettled: bigint;
+}
+
+type EvmContinuousAuctionBidInput = {
+  [
+    K in keyof EvmContinuousAuctionBid
+  ]: EvmContinuousAuctionBid[K] extends bigint
+    ? bigint | number
+    : EvmContinuousAuctionBid[K];
+};
 
 export interface EvmSaltedTokenInput {
   minter: Hex;
@@ -212,6 +243,87 @@ export function deriveEvmIndexedSalt(
   assertBigintUint(index, UINT256_MAX, "index", 256);
   const nonceWord = toSizedHex(sizedHexToBigInt(nonce, 32, "nonce"), 32);
   return keccak256(`0x${nonceWord.slice(2)}${toSizedHex(index, 32).slice(2)}`);
+}
+
+/**
+ * Normalizes the first three values returned by `ContinuousAuction.auctions(poolId)`. The contract
+ * returns an empty next bid (zero bidder) when none is scheduled.
+ */
+export function parseEvmContinuousAuctionState([
+  current,
+  next,
+  lastSettled,
+]: readonly [
+  EvmContinuousAuctionBidInput,
+  EvmContinuousAuctionBidInput,
+  bigint | number,
+  ...unknown[],
+]): EvmContinuousAuctionState {
+  return {
+    current: parseContinuousAuctionBid(current),
+    next: BigInt(next.bidder) === 0n ? null : parseContinuousAuctionBid(next),
+    lastSettled: BigInt(lastSettled),
+  };
+}
+
+/**
+ * Returns the bid holding the pool at `timestamp`, mirroring `ContinuousAuction._activeBid`: the
+ * next bid takes over at its start. Returns null when no bid holds the pool, in which case the pool
+ * rejects swaps and must not be quoted.
+ */
+export function getEvmContinuousAuctionLiveBid(
+  { current, next }: EvmContinuousAuctionState,
+  timestamp: bigint,
+): EvmContinuousAuctionBid | null {
+  const active = next !== null && next.start <= timestamp ? next : current;
+  return active.start <= timestamp && timestamp < active.end ? active : null;
+}
+
+/**
+ * Applies a continuous auction bid's fee to a zero-fee Core swap for a swapper other than the
+ * bid's executor. Like the Ve33 voted fee, it is charged in the unspecified token: taken from the
+ * output of exact-input swaps (`amount >= 0`) and added to the input of exact-output swaps.
+ * `calculatedAmount` is the unsigned calculated amount of the Core swap and `fee` the bid's 0.32
+ * fee; the executor pays no fee.
+ */
+export function applyEvmContinuousAuctionFee({
+  amount,
+  calculatedAmount,
+  fee,
+}: {
+  amount: bigint;
+  calculatedAmount: bigint;
+  fee: bigint;
+}): { calculatedAmount: bigint; feeAmount: bigint } {
+  assertBigintUint(fee, UINT32_MAX, "fee", 32);
+  // The 0.32 fee is the upper half of Core's 0.64 fee, which is the upper half of a 0.128 fee.
+  const fee128 = fee << 96n;
+  if (amount >= 0n) {
+    const feeAmount = computeFee(calculatedAmount, fee128);
+    return { calculatedAmount: calculatedAmount - feeAmount, feeAmount };
+  }
+  const amountIncludingFee = amountBeforeFee(calculatedAmount, fee128);
+  // The extension casts the input including the fee to int128.
+  if (amountIncludingFee > INT128_MAX) {
+    throw new Error("AMOUNT_BEFORE_FEE_OVERFLOW");
+  }
+  return {
+    calculatedAmount: amountIncludingFee,
+    feeAmount: amountIncludingFee - calculatedAmount,
+  };
+}
+
+function parseContinuousAuctionBid(
+  bid: EvmContinuousAuctionBidInput,
+): EvmContinuousAuctionBid {
+  return {
+    bidder: bid.bidder,
+    rate: BigInt(bid.rate),
+    executor: bid.executor,
+    start: BigInt(bid.start),
+    end: BigInt(bid.end),
+    fee: BigInt(bid.fee),
+  };
 }
 
 function hashSaltedTokenInput(
