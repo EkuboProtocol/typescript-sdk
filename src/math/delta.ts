@@ -1,4 +1,4 @@
-import { MAX_U128, MAX_U256 } from "./constants";
+import { MAX_U128, MAX_U256 } from "./constants.js";
 
 export function amount0Delta(
   sqrtRatioA: bigint,

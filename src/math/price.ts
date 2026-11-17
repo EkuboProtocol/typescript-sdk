@@ -1,4 +1,4 @@
-import { MAX_U256 } from "./constants";
+import { MAX_U256 } from "./constants.js";
 
 const toBig = (value: unknown, name: string): bigint => {
   if (typeof value === "bigint") return value;

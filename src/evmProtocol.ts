@@ -1,4 +1,4 @@
-import type { Hex } from "./evmPoolKey";
+import type { Hex } from "./evmPoolKey.js";
 
 const UINT24_MAX = (1n << 24n) - 1n;
 const UINT32_MAX = (1n << 32n) - 1n;

@@ -1,4 +1,4 @@
-import { MAX_U256 } from "./constants";
+import { MAX_U256 } from "./constants.js";
 
 // ~ ln(2**128) * 2**64
 export const EXPONENT_LIMIT: bigint = 1623313478486440542208n;

@@ -1,4 +1,4 @@
-import { amount0Delta, amount1Delta } from "./delta";
+import { amount0Delta, amount1Delta } from "./delta.js";
 
 const Q128 = 1n << 128n;
 
