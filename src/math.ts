@@ -1,11 +1,11 @@
-import { MAX_U128, MAX_U256 } from "./math/constants";
-import { amount0Delta, amount1Delta } from "./math/delta";
-import msb from "./math/msb";
+import { MAX_U128, MAX_U256 } from "./math/constants.js";
+import { amount0Delta, amount1Delta } from "./math/delta.js";
+import msb from "./math/msb.js";
 import {
   nextSqrtRatioFromAmount0,
   nextSqrtRatioFromAmount1,
-} from "./math/price";
-import { computeStep } from "./math/swap";
+} from "./math/price.js";
+import { computeStep } from "./math/swap.js";
 import {
   EVM_MAX_SQRT_RATIO,
   EVM_MAX_TICK,
@@ -20,8 +20,8 @@ import {
   toSqrtRatio,
   floatSqrtRatioToFixed,
   fixedSqrtRatioToFloat,
-} from "./math/tick";
-import { calculateNextSqrtRatio } from "./math/twamm";
+} from "./math/tick.js";
+import { calculateNextSqrtRatio } from "./math/twamm.js";
 import {
   maxLiquidityForBaseToken,
   maxLiquidityForQuoteToken,
@@ -30,7 +30,7 @@ import {
   amountsFromSpecifiedAmount,
   liquidityToAmountBase,
   liquidityToAmountQuote,
-} from "./math/liquidity";
+} from "./math/liquidity.js";
 
 export {
   amount0Delta,

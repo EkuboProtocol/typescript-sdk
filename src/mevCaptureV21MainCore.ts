@@ -4,7 +4,7 @@ import {
   EVM_MIN_SQRT_RATIO,
   EVM_MIN_TICK,
   toSqrtRatio,
-} from "./math/tick";
+} from "./math/tick.js";
 
 const MAX_U128 = (1n << 128n) - 1n;
 const MAX_U256 = (1n << 256n) - 1n;

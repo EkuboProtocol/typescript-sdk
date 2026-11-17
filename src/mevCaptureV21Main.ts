@@ -3,7 +3,7 @@ import {
   EVM_MAX_TICK,
   EVM_MIN_SQRT_RATIO,
   EVM_MIN_TICK,
-} from "./math/tick";
+} from "./math/tick.js";
 import {
   checkedI128,
   CoreTickSearch,
@@ -18,7 +18,7 @@ import {
   type MevCaptureV21MainCoreState,
   type MevCaptureV21MainTick,
   type TickEvent,
-} from "./mevCaptureV21MainCore";
+} from "./mevCaptureV21MainCore.js";
 
 export {
   isValidSqrtRatio as isValidMevCaptureV21MainSqrtRatio,
@@ -29,7 +29,7 @@ export {
   succSqrtRatio,
   type MevCaptureV21MainCoreState,
   type MevCaptureV21MainTick,
-} from "./mevCaptureV21MainCore";
+} from "./mevCaptureV21MainCore.js";
 
 /** `MAX_TICK_SPACING` of the current Core. */
 export const MEV_CAPTURE_V21_MAIN_MAX_TICK_SPACING = 698_605;

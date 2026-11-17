@@ -1,6 +1,6 @@
-import { nextSqrtRatioFromAmount0, nextSqrtRatioFromAmount1 } from "./price";
-import { amount0Delta, amount1Delta } from "./delta";
-import { MAX_U128 } from "./constants";
+import { nextSqrtRatioFromAmount0, nextSqrtRatioFromAmount1 } from "./price.js";
+import { amount0Delta, amount1Delta } from "./delta.js";
+import { MAX_U128 } from "./constants.js";
 
 interface SwapResult {
   consumedAmount: bigint;

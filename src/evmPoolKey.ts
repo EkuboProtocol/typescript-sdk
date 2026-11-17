@@ -1,4 +1,4 @@
-import { EVM_MAX_TICK_SPACING } from "./math/tick";
+import { EVM_MAX_TICK_SPACING } from "./math/tick.js";
 
 export type Hex = `0x${string}`;
 

@@ -1,5 +1,5 @@
-import { Chain } from "./chain";
-import { MAX_U256 } from "./constants";
+import { Chain } from "./chain.js";
+import { MAX_U256 } from "./constants.js";
 
 export const EVM_MIN_TICK = -88722835 as const;
 export const EVM_MAX_TICK = 88722835 as const;
